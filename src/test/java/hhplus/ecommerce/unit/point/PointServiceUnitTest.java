@@ -1,7 +1,7 @@
 package hhplus.ecommerce.unit.point;
 
-import hhplus.ecommerce.domain.common.exception.BusinessException;
-import hhplus.ecommerce.domain.common.exception.ErrorCode;
+import hhplus.ecommerce.common.exception.BusinessException;
+import hhplus.ecommerce.common.exception.ErrorCode;
 import hhplus.ecommerce.domain.point.IPointRepository;
 import hhplus.ecommerce.domain.point.PointService;
 import hhplus.ecommerce.domain.point.dto.ChargePointCommand;

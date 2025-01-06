@@ -1,4 +1,4 @@
-package hhplus.ecommerce.domain.common.exception;
+package hhplus.ecommerce.common.exception;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;

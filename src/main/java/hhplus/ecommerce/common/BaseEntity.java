@@ -1,4 +1,4 @@
-package hhplus.ecommerce.domain.common;
+package hhplus.ecommerce.common;
 
 import jakarta.persistence.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;

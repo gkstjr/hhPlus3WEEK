@@ -1,8 +1,8 @@
 package hhplus.ecommerce.domain.point.model;
 
-import hhplus.ecommerce.domain.common.BaseEntity;
-import hhplus.ecommerce.domain.common.exception.BusinessException;
-import hhplus.ecommerce.domain.common.exception.ErrorCode;
+import hhplus.ecommerce.common.BaseEntity;
+import hhplus.ecommerce.common.exception.BusinessException;
+import hhplus.ecommerce.common.exception.ErrorCode;
 import hhplus.ecommerce.domain.user.model.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

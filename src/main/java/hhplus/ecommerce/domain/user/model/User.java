@@ -1,6 +1,6 @@
 package hhplus.ecommerce.domain.user.model;
 
-import hhplus.ecommerce.domain.common.BaseEntity;
+import hhplus.ecommerce.common.BaseEntity;
 import hhplus.ecommerce.domain.point.model.Point;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -1,4 +1,4 @@
-package hhplus.ecommerce.domain.common.exception;
+package hhplus.ecommerce.common.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

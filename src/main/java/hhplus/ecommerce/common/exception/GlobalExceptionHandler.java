@@ -1,4 +1,4 @@
-package hhplus.ecommerce.domain.common.exception;
+package hhplus.ecommerce.common.exception;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
