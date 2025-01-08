@@ -10,5 +10,6 @@ public record UserPointInfo(
 ) {
     public static UserPointInfo of(Point point) {
         return new UserPointInfo(point.getId(),point.getUser().getId(),point.getPoint());
+
     }
 }
