@@ -39,4 +39,14 @@ public class Point extends BaseEntity {
     public void isMaxPoint(long point) {
         if(point > MAX_POINT) throw new BusinessException(ErrorCode.OVER_POINT_LIMIT);
     }
+
+    public void subtractPoint(long totalAmount) {
+        validateOverPoint(totalAmount);
+        point -= totalAmount;
+        System.out.println("포인트 = " + point);
+    }
+
+    private void validateOverPoint(long amount) {
+        if(amount > point) throw new BusinessException(ErrorCode.OUT_OF_POINT);
+    }
 }

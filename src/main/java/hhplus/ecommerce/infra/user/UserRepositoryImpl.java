@@ -19,4 +19,14 @@ public class UserRepositoryImpl implements IUserRepository {
     public User save(User user) {
         return jpaUserRepository.save(user);
     }
+
+    @Override
+    public Optional<User> findById(long id) {
+        return jpaUserRepository.findById(id);
+    }
+
+    @Override
+    public void deleteAll() {
+        jpaUserRepository.deleteAll();
+    }
 }

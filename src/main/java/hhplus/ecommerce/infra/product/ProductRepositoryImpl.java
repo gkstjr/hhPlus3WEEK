@@ -31,4 +31,9 @@ public class ProductRepositoryImpl implements IProductRepository {
     public void deleteAll() {
         jpaProductRepository.deleteAll();
     }
+
+    @Override
+    public Product save(Product product) {
+        return jpaProductRepository.save(product);
+    }
 }

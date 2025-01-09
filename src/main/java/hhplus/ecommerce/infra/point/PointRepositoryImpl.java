@@ -22,4 +22,19 @@ public class PointRepositoryImpl implements IPointRepository {
     public Point save(Point point) {
         return jpaPointRepository.save(point);
     }
+
+    @Override
+    public Optional<Point> findByUserIdWithLock(long userId) {
+        return jpaPointRepository.findByUserIdWithLock(userId);
+    }
+
+    @Override
+    public Optional<Point> findById(Long id) {
+        return jpaPointRepository.findById(id);
+    }
+
+    @Override
+    public void deleteAll() {
+        jpaPointRepository.deleteAll();
+    }
 }

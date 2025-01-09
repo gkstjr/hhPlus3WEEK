@@ -12,4 +12,6 @@ public interface IProductRepository {
     List<Product> saveAll(List<Product> products);
 
     void deleteAll();
+
+    Product save(Product product);
 }

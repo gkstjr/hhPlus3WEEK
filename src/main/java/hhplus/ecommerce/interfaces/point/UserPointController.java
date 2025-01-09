@@ -1,6 +1,8 @@
 package hhplus.ecommerce.interfaces.point;
 
 import hhplus.ecommerce.domain.point.PointService;
+import hhplus.ecommerce.domain.point.dto.ChargePointCommand;
+import hhplus.ecommerce.domain.point.dto.UserPointInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
@@ -23,17 +25,13 @@ public class UserPointController {
      * */
     @Operation(summary = "잔액 조회", description = "사용자의 잔액을 조회합니다.")
     @GetMapping("/{userId}/points")
-    public ResponseEntity<Map<String, Object>> getBalance(@PathVariable long userId) {
-
-        pointService.getUserPoint(userId);
-
-        return ResponseEntity.ok(new HashMap<>());
+    public ResponseEntity<UserPointInfo> getBalance(@PathVariable long userId) {
+        return ResponseEntity.ok(pointService.getUserPoint(userId));
     }
 
     @Operation(summary = "잔액 충전", description = "사용자의 잔액을 충전합니다.")
-    @PostMapping("/users/{userId}/balance")
-    public ResponseEntity<String> rechargeBalance(@PathVariable Long userId, @RequestBody Map<String, Long> request) {
-        Long amount = request.get("amount");
-        return ResponseEntity.ok("잔액 충전 포인트 : " + amount);
+    @PostMapping("/{userId}/points")
+    public ResponseEntity<UserPointInfo> rechargeBalance(@PathVariable Long userId, @RequestBody long chargePoint) {
+        return ResponseEntity.ok(pointService.chargePoint(new ChargePointCommand(userId,chargePoint)));
     }
 }
