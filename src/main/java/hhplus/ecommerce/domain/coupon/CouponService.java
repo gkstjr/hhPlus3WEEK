@@ -11,6 +11,7 @@ import hhplus.ecommerce.domain.user.IUserRepository;
 import hhplus.ecommerce.domain.user.model.User;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public class CouponService {
         this.iUserRepository = iUserRepository;
         this.iIssuedCouponRepository = iIssuedCouponRepository;
     }
-    @Transactional
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public IssueCouponInfo issueCoupon(IssueCouponCommand issueCouponCommand) {
         Coupon getCoupon = iCouponRepository.findByIdWithLock(issueCouponCommand.couponId()).orElseThrow(() -> new BusinessException(ErrorCode.COUPON_NOT_FOUND));
         User getUser =  iUserRepository.findById(issueCouponCommand.userId()).orElseThrow(()-> new BusinessException(ErrorCode.USER_NOT_FOUND));

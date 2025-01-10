@@ -33,6 +33,6 @@ public class IssuedCouponRepositoryImpl implements IIssuedCouponRepository {
 
     @Override
     public List<IssuedCoupon> findAllByUserId(long userId) {
-        return jpaIssuedCouponRepo.findAllByUserId();
+        return jpaIssuedCouponRepo.findAllByUserId(userId);
     }
 }
