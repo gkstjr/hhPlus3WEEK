@@ -1,27 +1,20 @@
 package hhplus.ecommerce.integration.payment;
 
-import hhplus.ecommerce.domain.order.IOrderRepository;
-import hhplus.ecommerce.domain.order.model.Order;
-import hhplus.ecommerce.domain.order.model.OrderStatus;
-import hhplus.ecommerce.domain.payment.IPaymentRepository;
-import hhplus.ecommerce.domain.payment.PaymentService;
-import hhplus.ecommerce.domain.payment.dto.PayCommand;
-import hhplus.ecommerce.domain.payment.dto.PayInfo;
-import hhplus.ecommerce.domain.point.IPointRepository;
-import hhplus.ecommerce.domain.point.model.Point;
-import hhplus.ecommerce.domain.user.IUserRepository;
-import hhplus.ecommerce.domain.user.model.User;
-import org.assertj.core.api.Assertions;
+import hhplus.ecommerce.order.domain.IOrderRepository;
+import hhplus.ecommerce.order.domain.model.Order;
+import hhplus.ecommerce.order.domain.model.OrderStatus;
+import hhplus.ecommerce.payment.domain.IPaymentRepository;
+import hhplus.ecommerce.payment.application.PaymentService;
+import hhplus.ecommerce.payment.domain.dto.PayCommand;
+import hhplus.ecommerce.payment.domain.dto.PayInfo;
+import hhplus.ecommerce.point.domain.IPointRepository;
+import hhplus.ecommerce.point.domain.model.Point;
+import hhplus.ecommerce.user.domain.IUserRepository;
+import hhplus.ecommerce.user.domain.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import static org.assertj.core.api.Assertions.*;
 

@@ -2,9 +2,9 @@ package hhplus.ecommerce.unit.coupon;
 
 import hhplus.ecommerce.common.exception.BusinessException;
 import hhplus.ecommerce.common.exception.ErrorCode;
-import hhplus.ecommerce.domain.coupon.issuedcoupon.IssuedCoupon;
-import hhplus.ecommerce.domain.coupon.model.Coupon;
-import hhplus.ecommerce.domain.user.model.User;
+import hhplus.ecommerce.coupon.domain.issuedcoupon.IssuedCoupon;
+import hhplus.ecommerce.coupon.domain.model.Coupon;
+import hhplus.ecommerce.user.domain.model.User;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;

@@ -2,12 +2,12 @@ package hhplus.ecommerce.unit.point;
 
 import hhplus.ecommerce.common.exception.BusinessException;
 import hhplus.ecommerce.common.exception.ErrorCode;
-import hhplus.ecommerce.domain.point.IPointRepository;
-import hhplus.ecommerce.domain.point.PointService;
-import hhplus.ecommerce.domain.point.dto.ChargePointCommand;
-import hhplus.ecommerce.domain.point.dto.UserPointInfo;
-import hhplus.ecommerce.domain.point.model.Point;
-import hhplus.ecommerce.domain.user.model.User;
+import hhplus.ecommerce.point.domain.IPointRepository;
+import hhplus.ecommerce.point.application.PointService;
+import hhplus.ecommerce.point.domain.dto.ChargePointCommand;
+import hhplus.ecommerce.point.domain.dto.UserPointInfo;
+import hhplus.ecommerce.point.domain.model.Point;
+import hhplus.ecommerce.user.domain.model.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

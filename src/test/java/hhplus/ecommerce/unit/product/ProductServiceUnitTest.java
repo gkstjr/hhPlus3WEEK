@@ -1,10 +1,10 @@
 package hhplus.ecommerce.unit.product;
 
-import hhplus.ecommerce.domain.product.IProductRepository;
-import hhplus.ecommerce.domain.product.ProductService;
-import hhplus.ecommerce.domain.product.dto.GetProductsByFilterCommand;
-import hhplus.ecommerce.domain.product.model.Product;
-import hhplus.ecommerce.domain.product.stock.ProductStock;
+import hhplus.ecommerce.product.domain.IProductRepository;
+import hhplus.ecommerce.product.application.ProductService;
+import hhplus.ecommerce.product.domain.dto.GetProductsByFilterCommand;
+import hhplus.ecommerce.product.domain.model.Product;
+import hhplus.ecommerce.product.domain.stock.ProductStock;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

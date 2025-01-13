@@ -1,14 +1,14 @@
 package hhplus.ecommerce.integration.product;
 
-import hhplus.ecommerce.domain.order.IOrderProductRepository;
-import hhplus.ecommerce.domain.order.model.OrderProduct;
-import hhplus.ecommerce.domain.product.IProductRepository;
-import hhplus.ecommerce.domain.product.dto.PopularProductDto;
-import hhplus.ecommerce.domain.product.stock.IProductStockRepository;
-import hhplus.ecommerce.domain.product.ProductService;
-import hhplus.ecommerce.domain.product.dto.GetProductsByFilterCommand;
-import hhplus.ecommerce.domain.product.model.Product;
-import hhplus.ecommerce.domain.product.stock.ProductStock;
+import hhplus.ecommerce.order.domain.IOrderProductRepository;
+import hhplus.ecommerce.order.domain.model.OrderProduct;
+import hhplus.ecommerce.product.domain.IProductRepository;
+import hhplus.ecommerce.product.domain.dto.PopularProductDto;
+import hhplus.ecommerce.product.domain.stock.IProductStockRepository;
+import hhplus.ecommerce.product.application.ProductService;
+import hhplus.ecommerce.product.domain.dto.GetProductsByFilterCommand;
+import hhplus.ecommerce.product.domain.model.Product;
+import hhplus.ecommerce.product.domain.stock.ProductStock;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

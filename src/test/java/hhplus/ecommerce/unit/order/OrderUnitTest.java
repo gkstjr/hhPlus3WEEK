@@ -2,15 +2,15 @@ package hhplus.ecommerce.unit.order;
 
 import hhplus.ecommerce.common.exception.BusinessException;
 import hhplus.ecommerce.common.exception.ErrorCode;
-import hhplus.ecommerce.domain.coupon.issuedcoupon.CouponStatus;
-import hhplus.ecommerce.domain.coupon.issuedcoupon.IssuedCoupon;
-import hhplus.ecommerce.domain.coupon.model.Coupon;
-import hhplus.ecommerce.domain.order.model.Order;
-import hhplus.ecommerce.domain.order.model.OrderProduct;
-import hhplus.ecommerce.domain.order.model.OrderStatus;
-import hhplus.ecommerce.domain.product.model.Product;
-import hhplus.ecommerce.domain.product.stock.ProductStock;
-import hhplus.ecommerce.domain.user.model.User;
+import hhplus.ecommerce.coupon.domain.issuedcoupon.CouponStatus;
+import hhplus.ecommerce.coupon.domain.issuedcoupon.IssuedCoupon;
+import hhplus.ecommerce.coupon.domain.model.Coupon;
+import hhplus.ecommerce.order.domain.model.Order;
+import hhplus.ecommerce.order.domain.model.OrderProduct;
+import hhplus.ecommerce.order.domain.model.OrderStatus;
+import hhplus.ecommerce.product.domain.model.Product;
+import hhplus.ecommerce.product.domain.stock.ProductStock;
+import hhplus.ecommerce.user.domain.model.User;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;

@@ -2,18 +2,15 @@ package hhplus.ecommerce.unit.payment;
 
 import hhplus.ecommerce.common.exception.BusinessException;
 import hhplus.ecommerce.common.exception.ErrorCode;
-import hhplus.ecommerce.domain.order.IOrderRepository;
-import hhplus.ecommerce.domain.order.model.Order;
-import hhplus.ecommerce.domain.payment.PaymentService;
-import hhplus.ecommerce.domain.payment.dto.PayCommand;
-import hhplus.ecommerce.domain.point.IPointRepository;
-import org.aspectj.weaver.ast.Or;
-import org.assertj.core.api.Assertions;
+import hhplus.ecommerce.order.domain.IOrderRepository;
+import hhplus.ecommerce.order.domain.model.Order;
+import hhplus.ecommerce.payment.application.PaymentService;
+import hhplus.ecommerce.payment.domain.dto.PayCommand;
+import hhplus.ecommerce.point.domain.IPointRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
