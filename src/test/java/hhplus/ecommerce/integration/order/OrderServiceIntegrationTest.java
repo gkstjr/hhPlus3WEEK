@@ -42,6 +42,7 @@ public class OrderServiceIntegrationTest {
     IIssuedCouponRepository iIssuedCouponRepository;
     @Autowired
     ICouponRepository iCouponRepository;
+
     @BeforeEach
     public void setUp() {
         //삭제
@@ -51,6 +52,7 @@ public class OrderServiceIntegrationTest {
         iIssuedCouponRepository.deleteAll();
         iCouponRepository.deleteAll();
         iProductStockRepository.deleteAll();
+
     }
 
     @Test

@@ -11,5 +11,5 @@ public interface JpaIssuedCouponRepo extends JpaRepository<IssuedCoupon,Long> {
     @Query("select ic from IssuedCoupon ic join fetch ic.coupon where ic.id = :issuedCouponId")
     Optional<IssuedCoupon> findByIdWithCoupon(Long issuedCouponId);
 
-    List<IssuedCoupon> findAllByUserId();
+    List<IssuedCoupon> findAllByUserId(long userId);
 }
