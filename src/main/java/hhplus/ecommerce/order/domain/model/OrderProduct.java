@@ -6,10 +6,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Builder
-@AllArgsConstructor
 public class OrderProduct extends BaseEntity {
 
     @Id
@@ -36,5 +34,14 @@ public class OrderProduct extends BaseEntity {
 
     public void addOrder(Order order) {
         this.order = order;
+    }
+
+    @Builder
+    public OrderProduct(Long id, Order order, Product product, int quantity, int price) {
+        this.id = id;
+        this.order = order;
+        this.product = product;
+        this.quantity = quantity;
+        this.price = price;
     }
 }

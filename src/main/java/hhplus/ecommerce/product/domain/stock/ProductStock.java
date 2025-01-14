@@ -7,9 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class ProductStock {
     @Id
@@ -31,6 +29,13 @@ public class ProductStock {
     }
 
     public void addProduct(Product product) {
+        this.product = product;
+    }
+
+    @Builder
+    public ProductStock(Long id, int stock, Product product) {
+        this.id = id;
+        this.stock = stock;
         this.product = product;
     }
 }

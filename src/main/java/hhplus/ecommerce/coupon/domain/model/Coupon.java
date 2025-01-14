@@ -5,19 +5,14 @@ import hhplus.ecommerce.common.exception.BusinessException;
 import hhplus.ecommerce.common.exception.ErrorCode;
 import hhplus.ecommerce.coupon.domain.issuedcoupon.IssuedCoupon;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Coupon extends BaseEntity {
 
@@ -30,27 +25,42 @@ public class Coupon extends BaseEntity {
     private int issuedCount;
     private LocalDate validUntil;
 
-    @OneToMany(mappedBy = "coupon" , cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "coupon", cascade = CascadeType.ALL)
     private List<IssuedCoupon> issuedCoupons = new ArrayList<>();
 
-//    public Coupon issue(User user) {
-//        validateAvailableCoupon();
-//
-//    }
-
+    // 비즈니스 로직
     public void validateIssueCoupon() {
         validateCount();
         validateDate();
     }
 
     public void validateDate() {
-        if(validUntil.isBefore(LocalDate.now())) throw new BusinessException(ErrorCode.COUPON_EXPIRED_ISSUE);
+        if (validUntil.isBefore(LocalDate.now())) {
+            throw new BusinessException(ErrorCode.COUPON_EXPIRED_ISSUE);
+        }
     }
-    public void validateCount() {
-        if(issuedCount >= maxIssuedCount) throw new BusinessException(ErrorCode.COUPON_MAX_ISSUE);
+
+    private void validateCount() {
+        if (issuedCount >= maxIssuedCount) {
+            throw new BusinessException(ErrorCode.COUPON_MAX_ISSUE);
+        }
     }
 
     public void incrementIssuedCoupons() {
         issuedCount++;
+    }
+
+
+    // 테스트용 빌더
+    @Builder
+    public static Coupon create(Long id , String name, long discountPrice, int maxIssuedCount, LocalDate validUntil , int issuedCount) {
+        Coupon coupon = new Coupon();
+        coupon.id = id;
+        coupon.name = name;
+        coupon.discountPrice = discountPrice;
+        coupon.maxIssuedCount = maxIssuedCount;
+        coupon.validUntil = validUntil;
+        coupon.issuedCount = issuedCount;
+        return coupon;
     }
 }

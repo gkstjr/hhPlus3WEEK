@@ -5,16 +5,11 @@ import hhplus.ecommerce.common.exception.BusinessException;
 import hhplus.ecommerce.common.exception.ErrorCode;
 import hhplus.ecommerce.user.domain.model.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Point extends BaseEntity {
 
     @Id
@@ -48,5 +43,12 @@ public class Point extends BaseEntity {
 
     private void validateOverPoint(long amount) {
         if(amount > point) throw new BusinessException(ErrorCode.OUT_OF_POINT);
+    }
+
+    @Builder
+    public Point(Long id, User user, long point) {
+        this.id = id;
+        this.user = user;
+        this.point = point;
     }
 }

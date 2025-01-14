@@ -4,7 +4,7 @@ import hhplus.ecommerce.order.domain.IOrderRepository;
 import hhplus.ecommerce.order.domain.model.Order;
 import hhplus.ecommerce.order.domain.model.OrderStatus;
 import hhplus.ecommerce.payment.domain.IPaymentRepository;
-import hhplus.ecommerce.payment.application.PaymentService;
+import hhplus.ecommerce.payment.domain.PaymentService;
 import hhplus.ecommerce.payment.domain.dto.PayCommand;
 import hhplus.ecommerce.payment.domain.dto.PayInfo;
 import hhplus.ecommerce.point.domain.IPointRepository;

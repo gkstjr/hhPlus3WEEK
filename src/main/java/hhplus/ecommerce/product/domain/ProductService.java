@@ -1,8 +1,9 @@
-package hhplus.ecommerce.product.application;
+package hhplus.ecommerce.product.domain;
 
 import hhplus.ecommerce.order.domain.IOrderProductRepository;
 import hhplus.ecommerce.product.domain.IProductRepository;
 import hhplus.ecommerce.product.domain.dto.GetProductsByFilterCommand;
+import hhplus.ecommerce.product.domain.dto.GetProductsByFilterInfo;
 import hhplus.ecommerce.product.domain.dto.PopularProductDto;
 import hhplus.ecommerce.product.domain.model.Product;
 import org.springframework.data.domain.Page;
@@ -24,8 +25,9 @@ public class ProductService {
         this.iOrderProductRepository = iOrderProductRepository;
     }
 
-    public Page<Product> getProductsByFilter(GetProductsByFilterCommand command , Pageable pageable) {
-        return  iProductRepository.findByProductWithStockByFilter(command.productName() , command.minPrice() , command.maxPrice(),pageable);
+    public Page<GetProductsByFilterInfo> getProductsByFilter(GetProductsByFilterCommand command , Pageable pageable) {
+
+        return  iProductRepository.findByProductWithStockByFilter(command.productName() , command.minPrice() , command.maxPrice(),pageable).map(GetProductsByFilterInfo::from);
     }
 
     public List<PopularProductDto> getPopularProduct3Days() {

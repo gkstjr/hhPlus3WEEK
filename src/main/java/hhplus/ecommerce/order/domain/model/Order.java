@@ -16,9 +16,7 @@ import java.util.Map;
 
 @Entity
 @Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "orders")
 public class Order extends BaseEntity {
 
@@ -80,6 +78,14 @@ public class Order extends BaseEntity {
         this.status = OrderStatus.PAYMENT_COMPLETED;
     }
 
-
-//    private void
+    @Builder
+    public Order(Long id, User user, List<OrderProduct> orderProductList, long totalAmount, OrderStatus status, Payment payment, IssuedCoupon issuedCoupon) {
+        this.id = id;
+        this.user = user;
+        this.orderProductList = orderProductList;
+        this.totalAmount = totalAmount;
+        this.status = status;
+        this.payment = payment;
+        this.issuedCoupon = issuedCoupon;
+    }
 }

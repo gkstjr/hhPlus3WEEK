@@ -14,9 +14,11 @@ public enum ErrorCode {
     //상품
     PRODUCT_NOT_FOUND(HttpStatus.BAD_REQUEST,"존재하지 않는 상품입니다."),
     INVALID_QUANTITY(HttpStatus.BAD_REQUEST,"상품 구매 수량은 1개 이상부터 가능합니다." ),
+
     //사용자
     USER_NOT_FOUND(HttpStatus.BAD_REQUEST,"존재하지 않는 사용자입니다."),
     OUT_OF_STOCK(HttpStatus.BAD_REQUEST,"상품 재고가 부족합니다." ),
+
     //쿠폰
     COUPON_NOT_FOUND(HttpStatus.BAD_REQUEST,"쿠폰이 존재하지 않습니다." ),
     COUPON_MAX_ISSUE(HttpStatus.BAD_REQUEST, "쿠폰 발급인원이 가득 찼습니다."),
@@ -24,6 +26,7 @@ public enum ErrorCode {
     ALREADY_ISSUE_COUPON(HttpStatus.BAD_REQUEST,"이미 발급받은 쿠폰입니다."),
     ISSUEDCOUPON_NOT_FOUND(HttpStatus.BAD_REQUEST,"발급받은 쿠폰이 없습니다."),
     ALREADY_USE_COUPON(HttpStatus.BAD_REQUEST,"이미 사용한 쿠폰입니다." ),
+
     //주문&결제
     ORDER_NOT_FOUND(HttpStatus.BAD_REQUEST, "결제에 필요한 주문이 존재하지 않습니다." );
 

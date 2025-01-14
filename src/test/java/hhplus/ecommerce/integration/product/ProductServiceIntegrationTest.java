@@ -3,9 +3,10 @@ package hhplus.ecommerce.integration.product;
 import hhplus.ecommerce.order.domain.IOrderProductRepository;
 import hhplus.ecommerce.order.domain.model.OrderProduct;
 import hhplus.ecommerce.product.domain.IProductRepository;
+import hhplus.ecommerce.product.domain.dto.GetProductsByFilterInfo;
 import hhplus.ecommerce.product.domain.dto.PopularProductDto;
 import hhplus.ecommerce.product.domain.stock.IProductStockRepository;
-import hhplus.ecommerce.product.application.ProductService;
+import hhplus.ecommerce.product.domain.ProductService;
 import hhplus.ecommerce.product.domain.dto.GetProductsByFilterCommand;
 import hhplus.ecommerce.product.domain.model.Product;
 import hhplus.ecommerce.product.domain.stock.ProductStock;
@@ -62,13 +63,13 @@ public class ProductServiceIntegrationTest {
         List<Product> savedProducts = iProductRepository.saveAll(products);
 
         //when
-        Page<Product> result = productService.getProductsByFilter(new GetProductsByFilterCommand(filterName,filterMinPrice,filterMaxPrice), pageable);
+        Page<GetProductsByFilterInfo> result = productService.getProductsByFilter(new GetProductsByFilterCommand(filterName,filterMinPrice,filterMaxPrice), pageable);
         //then
         assertThat(result.getContent().size()).isEqualTo(4);
         assertThat(result.getContent())
-                .extracting(Product::getName)
+                .extracting(GetProductsByFilterInfo::name)
                 .containsExactlyInAnyOrder("상품1","상품2","상품3","상품4");
-        assertThat(result.getContent().get(0).getProductStock().getStock()).isEqualTo(20); //재고 정보 확인
+        assertThat(result.getContent().get(0).stockQuantity()).isEqualTo(20); //재고 정보 확인
     }
 
     @Test
@@ -92,13 +93,13 @@ public class ProductServiceIntegrationTest {
         List<Product> savedProducts = iProductRepository.saveAll(products);
 
         //when
-        Page<Product> result = productService.getProductsByFilter(new GetProductsByFilterCommand(filterName,filterMinPrice,filterMaxPrice), pageable);
+        Page<GetProductsByFilterInfo> result = productService.getProductsByFilter(new GetProductsByFilterCommand(filterName,filterMinPrice,filterMaxPrice), pageable);
         //then
         assertThat(result.getContent().size()).isEqualTo(4);
         assertThat(result.getContent())
-                .extracting(Product::getName)
+                .extracting(GetProductsByFilterInfo::name)
                 .containsExactlyInAnyOrder("상품3","상품4","신발1","신발2");
-        assertThat(result.getContent().get(0).getProductStock().getStock()).isEqualTo(stock); //재고 정보 확인
+        assertThat(result.getContent().get(0).stockQuantity()).isEqualTo(stock); //재고 정보 확인
     }
 
     @Test

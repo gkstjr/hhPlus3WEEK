@@ -9,10 +9,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Builder
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {"user_id","coupon_id"})
@@ -60,5 +58,13 @@ public class IssuedCoupon extends BaseEntity {
     //테스트용(setter는 최대한 지양하자...)
     public void setId(long id) {
         this.id = id;
+    }
+
+    @Builder
+    public IssuedCoupon(Long id, User user, Coupon coupon, CouponStatus status) {
+        this.id = id;
+        this.user = user;
+        this.coupon = coupon;
+        this.status = status;
     }
 }

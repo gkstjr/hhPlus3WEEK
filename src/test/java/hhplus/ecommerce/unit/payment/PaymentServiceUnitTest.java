@@ -4,7 +4,7 @@ import hhplus.ecommerce.common.exception.BusinessException;
 import hhplus.ecommerce.common.exception.ErrorCode;
 import hhplus.ecommerce.order.domain.IOrderRepository;
 import hhplus.ecommerce.order.domain.model.Order;
-import hhplus.ecommerce.payment.application.PaymentService;
+import hhplus.ecommerce.payment.domain.PaymentService;
 import hhplus.ecommerce.payment.domain.dto.PayCommand;
 import hhplus.ecommerce.point.domain.IPointRepository;
 import org.junit.jupiter.api.Test;
@@ -50,7 +50,7 @@ public class PaymentServiceUnitTest {
         long userId = 1L;
         PayCommand payCommand = new PayCommand(orderId,userId);
 
-        when(iOrderRepository.findById(orderId)).thenReturn(Optional.of(new Order()));
+        when(iOrderRepository.findById(orderId)).thenReturn(Optional.of(Order.builder().build()));
         when(iPointRepository.findByUserIdWithLock(userId)).thenReturn(Optional.empty());
 
         //when,then

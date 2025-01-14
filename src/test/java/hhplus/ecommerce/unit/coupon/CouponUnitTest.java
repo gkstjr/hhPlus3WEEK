@@ -16,7 +16,7 @@ public class CouponUnitTest {
     @Test
     public void 쿠폰발급시_선착순인원이_찼으면_COUPON_MAX_ISSUE() {
         //given
-        User user = new User();
+        User user = User.builder().build();
         Coupon issueCoupon = Coupon.builder()
                 .issuedCount(20)
                 .maxIssuedCount(20)
@@ -31,7 +31,7 @@ public class CouponUnitTest {
     @Test
     public void 쿠폰발급시_유효기간이_지났으면_COUPON_MAX_ISSUE() {
         //given
-        User user = new User();
+        User user = User.builder().build();
         Coupon issueCoupon = Coupon.builder()
                 .issuedCount(19)
                 .validUntil(LocalDate.now().minusDays(1))

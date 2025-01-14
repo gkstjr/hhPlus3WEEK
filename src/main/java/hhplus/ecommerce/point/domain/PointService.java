@@ -1,4 +1,4 @@
-package hhplus.ecommerce.point.application;
+package hhplus.ecommerce.point.domain;
 
 import hhplus.ecommerce.common.exception.BusinessException;
 import hhplus.ecommerce.common.exception.ErrorCode;

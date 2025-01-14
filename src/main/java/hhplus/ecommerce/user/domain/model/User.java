@@ -6,19 +6,14 @@ import hhplus.ecommerce.order.domain.model.Order;
 import hhplus.ecommerce.payment.domain.model.Payment;
 import hhplus.ecommerce.point.domain.model.Point;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "users")
 public class User extends BaseEntity {
     @Id
@@ -39,5 +34,15 @@ public class User extends BaseEntity {
 
     public void addPoint(Point getPoint) {
         point = getPoint;
+    }
+
+    @Builder
+    public User(Long id, String name, Point point, List<Order> orders, List<Payment> payments, List<IssuedCoupon> issuedCoupons) {
+        this.id = id;
+        this.name = name;
+        this.point = point;
+        this.orders = orders != null ? orders : new ArrayList<>();
+        this.payments = payments != null ? payments : new ArrayList<>();
+        this.issuedCoupons = issuedCoupons != null ? issuedCoupons : new ArrayList<>();
     }
 }

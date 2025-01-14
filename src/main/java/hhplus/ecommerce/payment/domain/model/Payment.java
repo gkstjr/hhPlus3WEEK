@@ -5,13 +5,10 @@ import hhplus.ecommerce.order.domain.model.Order;
 import hhplus.ecommerce.point.domain.model.Point;
 import hhplus.ecommerce.user.domain.model.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Payment extends BaseEntity {
 

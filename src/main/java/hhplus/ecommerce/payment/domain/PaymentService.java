@@ -1,4 +1,4 @@
-package hhplus.ecommerce.payment.application;
+package hhplus.ecommerce.payment.domain;
 
 import hhplus.ecommerce.common.exception.BusinessException;
 import hhplus.ecommerce.common.exception.ErrorCode;

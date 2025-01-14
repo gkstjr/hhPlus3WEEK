@@ -56,7 +56,7 @@ public class OrderUnitTest {
                 .status(CouponStatus.USED)
                 .build();
         //when
-        Order order = new Order();
+        Order order = Order.builder().build();
         //then
         assertThatThrownBy(() -> order.useCoupon(issuedCoupon))
                 .isInstanceOf(BusinessException.class)
@@ -73,7 +73,7 @@ public class OrderUnitTest {
                 .coupon(coupon)
                 .build();
         //when
-        Order order = new Order();
+        Order order = Order.builder().build();
         //then
         assertThatThrownBy(() -> order.useCoupon(issuedCoupon))
                 .isInstanceOf(BusinessException.class)

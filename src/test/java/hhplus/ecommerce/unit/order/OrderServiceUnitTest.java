@@ -4,7 +4,7 @@ import hhplus.ecommerce.common.exception.BusinessException;
 import hhplus.ecommerce.common.exception.ErrorCode;
 import hhplus.ecommerce.coupon.domain.issuedcoupon.IIssuedCouponRepository;
 import hhplus.ecommerce.order.domain.IOrderRepository;
-import hhplus.ecommerce.order.application.OrderService;
+import hhplus.ecommerce.order.domain.OrderService;
 import hhplus.ecommerce.order.domain.dto.OrderCommand;
 import hhplus.ecommerce.order.domain.dto.OrderItemDto;
 import hhplus.ecommerce.order.domain.model.OrderProduct;

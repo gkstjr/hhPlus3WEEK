@@ -1,4 +1,4 @@
-package hhplus.ecommerce.coupon.application;
+package hhplus.ecommerce.coupon.domain;
 
 import hhplus.ecommerce.common.exception.BusinessException;
 import hhplus.ecommerce.common.exception.ErrorCode;

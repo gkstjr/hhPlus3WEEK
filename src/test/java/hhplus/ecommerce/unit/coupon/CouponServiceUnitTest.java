@@ -2,7 +2,7 @@ package hhplus.ecommerce.unit.coupon;
 
 import hhplus.ecommerce.common.exception.BusinessException;
 import hhplus.ecommerce.common.exception.ErrorCode;
-import hhplus.ecommerce.coupon.application.CouponService;
+import hhplus.ecommerce.coupon.domain.CouponService;
 import hhplus.ecommerce.coupon.domain.ICouponRepository;
 import hhplus.ecommerce.coupon.domain.dto.IssueCouponCommand;
 import hhplus.ecommerce.coupon.domain.dto.IssueCouponInfo;
@@ -55,7 +55,7 @@ public class CouponServiceUnitTest {
         long couponId = 1;
         long userId = 1;
 
-        Mockito.when(iCouponRepository.findByIdWithLock(couponId)).thenReturn(Optional.of(new Coupon()));
+        Mockito.when(iCouponRepository.findByIdWithLock(couponId)).thenReturn(Optional.of(Coupon.builder().build()));
         Mockito.when(iUserRepository.findById(userId)).thenReturn(Optional.empty());
 
         //then
@@ -92,7 +92,7 @@ public class CouponServiceUnitTest {
         IssueCouponInfo result = couponService.issueCoupon(new IssueCouponCommand(user.getId(), coupon.getId()));
 
         // then
-        assertThat(result.coupon().getIssuedCount()).isEqualTo(currentIssueCnt + 1);
+        assertThat(result.issuedCount()).isEqualTo(currentIssueCnt + 1);
     }
 
 }

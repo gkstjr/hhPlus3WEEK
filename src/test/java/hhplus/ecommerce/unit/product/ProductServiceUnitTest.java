@@ -1,8 +1,9 @@
 package hhplus.ecommerce.unit.product;
 
 import hhplus.ecommerce.product.domain.IProductRepository;
-import hhplus.ecommerce.product.application.ProductService;
+import hhplus.ecommerce.product.domain.ProductService;
 import hhplus.ecommerce.product.domain.dto.GetProductsByFilterCommand;
+import hhplus.ecommerce.product.domain.dto.GetProductsByFilterInfo;
 import hhplus.ecommerce.product.domain.model.Product;
 import hhplus.ecommerce.product.domain.stock.ProductStock;
 import org.junit.jupiter.api.Test;
@@ -38,7 +39,7 @@ public class ProductServiceUnitTest {
         Mockito.when(iProductRepository.findByProductWithStockByFilter(name , minPrice , maxPrice , Pageable.unpaged()))
                 .thenReturn(Page.empty());
         //when
-        Page<Product> result = productService.getProductsByFilter(new GetProductsByFilterCommand(name , minPrice ,maxPrice), Pageable.unpaged());
+        Page<GetProductsByFilterInfo> result = productService.getProductsByFilter(new GetProductsByFilterCommand(name , minPrice ,maxPrice), Pageable.unpaged());
         //then
         assertThat(result).isEmpty();
     }
@@ -61,7 +62,7 @@ public class ProductServiceUnitTest {
                 .thenReturn(mockProducts);
 
         //when
-        Page<Product> result = productService.getProductsByFilter(new GetProductsByFilterCommand(null, null,null),PageRequest.of(0,10));
+        Page<GetProductsByFilterInfo> result = productService.getProductsByFilter(new GetProductsByFilterCommand(null, null,null),PageRequest.of(0,10));
 
         //then
         assertThat(result.getContent().size()).isEqualTo(mockProducts.getContent().size());

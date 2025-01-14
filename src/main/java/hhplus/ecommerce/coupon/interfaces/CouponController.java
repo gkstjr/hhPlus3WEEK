@@ -1,8 +1,9 @@
 package hhplus.ecommerce.coupon.interfaces;
 
-import hhplus.ecommerce.coupon.application.CouponService;
+import hhplus.ecommerce.coupon.domain.CouponService;
 import hhplus.ecommerce.coupon.domain.dto.IssueCouponCommand;
 import hhplus.ecommerce.coupon.domain.dto.IssueCouponInfo;
+import hhplus.ecommerce.coupon.interfaces.dto.IssueCouponResp;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
@@ -22,15 +23,15 @@ public class CouponController {
 
     @Operation(summary = "선착순 쿠폰 발급", description = "사용자에게 선착순 쿠폰을 발급합니다.")
     @PostMapping("/{userId}/coupons/{couponId}")
-    public ResponseEntity<IssueCouponInfo> issueCoupon(@PathVariable long userId , @PathVariable long couponId) {
+    public ResponseEntity<IssueCouponResp> issueCoupon(@PathVariable long userId , @PathVariable long couponId) {
 
-        return ResponseEntity.ok(couponService.issueCoupon(new IssueCouponCommand(userId,couponId)));
+        return ResponseEntity.ok(IssueCouponResp.from(couponService.issueCoupon(new IssueCouponCommand(userId,couponId))));
     }
 
     @Operation(summary = "보유 쿠폰 조회", description = "사용자가 보유한 쿠폰 목록을 조회합니다.")
     @GetMapping("/{userId}/coupons")
-    public ResponseEntity<List<IssueCouponInfo>> getUserCoupons(@PathVariable Long userId) {
+    public ResponseEntity<List<IssueCouponResp>> getUserCoupons(@PathVariable Long userId) {
 
-        return ResponseEntity.ok(couponService.getIssueCoupon(userId));
+        return ResponseEntity.ok(couponService.getIssueCoupon(userId).stream().map(IssueCouponResp::from).toList());
     }
 }

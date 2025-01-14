@@ -3,9 +3,10 @@ package hhplus.ecommerce.order.application;
 import hhplus.ecommerce.order.application.dataplatform.DataPlatformService;
 import hhplus.ecommerce.order.application.dto.OrderPayCriteria;
 import hhplus.ecommerce.order.application.dto.OrderPayResult;
+import hhplus.ecommerce.order.domain.OrderService;
 import hhplus.ecommerce.order.domain.dto.OrderCommand;
 import hhplus.ecommerce.order.domain.dto.OrderInfo;
-import hhplus.ecommerce.payment.application.PaymentService;
+import hhplus.ecommerce.payment.domain.PaymentService;
 import hhplus.ecommerce.payment.domain.dto.PayCommand;
 import hhplus.ecommerce.payment.domain.dto.PayInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -28,13 +29,13 @@ public class OrderPayFacade {
 
     @Transactional
     public OrderPayResult orderPay(OrderPayCriteria criteria) {
-        OrderInfo orderInfo = orderService.order(new OrderCommand(criteria.userId(),criteria.orderItems(), criteria.issuedCouponId()));
-        PayInfo payInfo = paymentService.pay(new PayCommand(orderInfo.orderId(),criteria.userId()));
+        OrderInfo orderInfo = orderService.order(criteria.toOrderCommand());
+        PayInfo payInfo = paymentService.pay(criteria.toPayCommand(orderInfo.orderId()));
 
         try{
             dataPlatformService.sendOrderData(orderInfo);
         }catch (Exception e) {
-            log.info("데이터 플랫폼 전송에 실패했습니다!  orderId = " + orderInfo.orderId());
+            log.info("데이터 플랫폼 전송에 실패했습니다.  orderId = " + orderInfo.orderId());
         }
 
         return OrderPayResult.of(orderInfo,payInfo);

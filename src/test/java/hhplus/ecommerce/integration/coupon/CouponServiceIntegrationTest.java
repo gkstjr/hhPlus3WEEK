@@ -2,7 +2,7 @@ package hhplus.ecommerce.integration.coupon;
 
 import hhplus.ecommerce.common.exception.BusinessException;
 import hhplus.ecommerce.common.exception.ErrorCode;
-import hhplus.ecommerce.coupon.application.CouponService;
+import hhplus.ecommerce.coupon.domain.CouponService;
 import hhplus.ecommerce.coupon.domain.ICouponRepository;
 import hhplus.ecommerce.coupon.domain.dto.IssueCouponCommand;
 import hhplus.ecommerce.coupon.domain.dto.IssueCouponInfo;
@@ -88,7 +88,7 @@ public class CouponServiceIntegrationTest {
         IssueCouponInfo result = couponService.issueCoupon(new IssueCouponCommand(user.getId(),coupon.getId()));
 
         //then
-        assertThat(result.coupon().getIssuedCount()).isEqualTo(currentIssued + 1);
+        assertThat(result.issuedCount()).isEqualTo(currentIssued + 1);
     }
 
     @Test

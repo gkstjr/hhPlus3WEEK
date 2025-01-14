@@ -10,9 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Product extends BaseEntity {
 
@@ -32,5 +30,13 @@ public class Product extends BaseEntity {
     public void setProductStock(ProductStock productStock) {
         this.productStock = productStock;
         productStock.addProduct(this);
+    }
+    @Builder
+    public Product(Long id, String name, long price, ProductStock productStock, List<OrderProduct> orderProductList) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.productStock = productStock;
+        this.orderProductList = orderProductList != null ? orderProductList : new ArrayList<>();
     }
 }
