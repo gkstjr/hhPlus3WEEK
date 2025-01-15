@@ -24,6 +24,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -57,13 +58,9 @@ public class OrderPaymentFacadeTest {
     private EntityManager entityManager;
     @BeforeEach
     public void cleanUp() {
-        couponRepository.deleteAllIssuedCoupon();
-        pointRepository.deleteAll();
         couponRepository.deleteAll();
         productRepository.deleteAll();
         userRepository.deleteAll();
-        entityManager.clear();
-
     }
     @Test
     public void 주문_결제_성공통합테스트() {
@@ -79,7 +76,6 @@ public class OrderPaymentFacadeTest {
                         .point(100000)
                         .user(user)
                         .build());
-
         List<Product> products = productRepository.saveAll(List.of(
                 getProduct("상품1",5000,getProductStock(10)),
                 getProduct("상품2",10000,getProductStock(5))

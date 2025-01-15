@@ -16,6 +16,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import static hhplus.ecommerce.domain.order.Order.*;
 import static org.assertj.core.api.Assertions.*;
@@ -43,8 +44,6 @@ public class PaymentServiceIntegrationTest {
         paymentRepository.deleteAll();
         orderRepository.deleteAll();
         userRepository.deleteAll();
-        entityManager.clear();
-
     }
     @Test
     public void 결제성공() {

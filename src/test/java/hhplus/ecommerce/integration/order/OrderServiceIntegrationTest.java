@@ -9,6 +9,7 @@ import hhplus.ecommerce.domain.order.OrderCommand;
 import hhplus.ecommerce.domain.order.OrderInfo;
 import hhplus.ecommerce.domain.order.OrderItemDto;
 import hhplus.ecommerce.domain.order.OrderProduct;
+import hhplus.ecommerce.domain.point.PointRepository;
 import hhplus.ecommerce.domain.product.ProductRepository;
 import hhplus.ecommerce.domain.product.Product;
 import hhplus.ecommerce.domain.product.ProductStock;
@@ -19,6 +20,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -40,17 +42,17 @@ public class OrderServiceIntegrationTest {
     @Autowired
     CouponRepository couponRepository;
     @Autowired
-    private EntityManager entityManager;
+    PointRepository pointRepository;
     @BeforeEach
     public void setUp() {
         //삭제
-        productRepository.deleteAll();
+        pointRepository.deleteAll();
         orderRepository.deleteAll();
         couponRepository.deleteAllIssuedCoupon();
         couponRepository.deleteAll();
         productRepository.deleteAllStock();
+        productRepository.deleteAll();
         userRepository.deleteAll();
-        entityManager.clear();
     }
 
     @Test

@@ -12,6 +12,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
+
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
@@ -26,9 +28,7 @@ public class PointServiceIntegrationTest {
     private EntityManager entityManager;
     @BeforeEach
     void before() {
-        pointRepository.deleteAll();
         userRepository.deleteAll();
-        entityManager.clear();
     }
     @Test
     public void 포인트조회() {

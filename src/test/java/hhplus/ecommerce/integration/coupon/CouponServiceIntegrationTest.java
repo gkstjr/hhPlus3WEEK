@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.concurrent.CountDownLatch;
@@ -37,10 +38,7 @@ public class CouponServiceIntegrationTest {
     private EntityManager entityManager;
     @BeforeEach
     public void before() {
-        couponRepository.deleteAllIssuedCoupon();
-        couponRepository.deleteAll();
         userRepository.deleteAll();
-        entityManager.clear();
     }
     @Test
     public void 쿠폰발급시_동일사용자가_동일한쿠폰발급하면_ALREADY_ISSUE_COUPON() {
