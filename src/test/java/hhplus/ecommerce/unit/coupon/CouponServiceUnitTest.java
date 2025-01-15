@@ -36,30 +36,15 @@ public class CouponServiceUnitTest {
         //given
         long couponId = 1;
         long userId = 1;
+        User user = User.builder().id(userId).build();
 
         Mockito.when(couponRepository.findByIdWithLock(couponId)).thenReturn(Optional.empty());
 
         //then
         //when
-        assertThatThrownBy(() -> couponService.issueCoupon(new IssueCouponCommand(userId,couponId)))
+        assertThatThrownBy(() -> couponService.issueCoupon(new IssueCouponCommand(user,couponId)))
                 .isInstanceOf(BusinessException.class)
                 .hasFieldOrPropertyWithValue("errorCode",ErrorCode.COUPON_NOT_FOUND);
-    }
-
-    @Test
-    public void 쿠폰발급시_사용자가없으면_USER_NOT_FOUND() {
-        //given
-        long couponId = 1;
-        long userId = 1;
-
-        Mockito.when(couponRepository.findByIdWithLock(couponId)).thenReturn(Optional.of(Coupon.builder().build()));
-        Mockito.when(userRepository.findById(userId)).thenReturn(Optional.empty());
-
-        //then
-        //when
-        assertThatThrownBy(() -> couponService.issueCoupon(new IssueCouponCommand(userId,couponId)))
-                .isInstanceOf(BusinessException.class)
-                .hasFieldOrPropertyWithValue("errorCode",ErrorCode.USER_NOT_FOUND);
     }
 
     @Test
@@ -77,7 +62,6 @@ public class CouponServiceUnitTest {
                 .name("사용자1").build();
 
         Mockito.when(couponRepository.findByIdWithLock(coupon.getId())).thenReturn(Optional.of(coupon));
-        Mockito.when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         Mockito.when(couponRepository.saveIssuedCoupon(Mockito.any(IssuedCoupon.class)))
                 .thenAnswer(invocation -> {
                     IssuedCoupon issuedCoupon = invocation.getArgument(0);
@@ -86,7 +70,7 @@ public class CouponServiceUnitTest {
                 });
 
         // when
-        IssueCouponInfo result = couponService.issueCoupon(new IssueCouponCommand(user.getId(), coupon.getId()));
+        IssueCouponInfo result = couponService.issueCoupon(new IssueCouponCommand(user, coupon.getId()));
 
         // then
         assertThat(result.issuedCount()).isEqualTo(currentIssueCnt + 1);

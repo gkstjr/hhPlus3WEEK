@@ -1,9 +1,11 @@
 package hhplus.ecommerce.domain.order;
 
+import hhplus.ecommerce.domain.user.User;
+
 import java.util.List;
 
 public record OrderCommand(
-        long userId,
+        User user,
         List<OrderItemDto> orderItems,
 
         Long issuedCouponId

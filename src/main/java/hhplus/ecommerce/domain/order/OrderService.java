@@ -25,8 +25,7 @@ public class OrderService {
 
     @Transactional
     public OrderInfo order(OrderCommand command) {
-        User user = userRepository.findById(command.userId())
-                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        User user = command.user();
 
         Map<Long, ProductStock> getProductStocks = productRepository.findAllByProductIdInWithLock(
                 command.orderItems().stream().map(OrderItemDto::productId).toList()

@@ -10,6 +10,8 @@ import hhplus.ecommerce.domain.point.PointRepository;
 import hhplus.ecommerce.domain.point.Point;
 import hhplus.ecommerce.domain.user.UserRepository;
 import hhplus.ecommerce.domain.user.User;
+import jakarta.persistence.EntityManager;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,12 +35,16 @@ public class PaymentServiceIntegrationTest {
     private PointRepository pointRepository;
     @Autowired
     private PaymentRepository paymentRepository;
+    @Autowired
+    private EntityManager entityManager;
     @BeforeEach
     void before() {
-        userRepository.deleteAll();
         pointRepository.deleteAll();
         paymentRepository.deleteAll();
         orderRepository.deleteAll();
+        userRepository.deleteAll();
+        entityManager.clear();
+
     }
     @Test
     public void 결제성공() {
@@ -58,7 +64,7 @@ public class PaymentServiceIntegrationTest {
                 .user(user)
                 .build());
         //when
-        PayInfo result = paymentService.pay(new PayCommand(order.getId(),point.getUser().getId()));
+        PayInfo result = paymentService.pay(new PayCommand(order.getId(),point.getUser()));
 
         //then
         assertThat(result.remindPoint()).isEqualTo(1);

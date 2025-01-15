@@ -20,7 +20,7 @@ public class PaymentService {
     @Transactional
     public PayInfo pay(PayCommand payCommand) {
         Order getOrder = orderRepository.findById(payCommand.orderId()).orElseThrow(() -> new BusinessException(ErrorCode.ORDER_NOT_FOUND));
-        Point getPoint =  pointRepository.findByUserIdWithLock(payCommand.userId()).orElseThrow(()-> new BusinessException(ErrorCode.POINT_NOT_FOUND));
+        Point getPoint =  pointRepository.findByUserIdWithLock(payCommand.user().getId()).orElseThrow(()-> new BusinessException(ErrorCode.POINT_NOT_FOUND));
 
         Payment payment = paymentRepository.save(Payment.createPay(getOrder , getPoint));
 

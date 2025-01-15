@@ -19,6 +19,7 @@ import hhplus.ecommerce.domain.product.Product;
 import hhplus.ecommerce.domain.product.ProductStock;
 import hhplus.ecommerce.domain.user.UserRepository;
 import hhplus.ecommerce.domain.user.User;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +53,8 @@ public class OrderPaymentFacadeTest {
     private CouponRepository couponRepository;
     @Autowired
     private PointRepository pointRepository;
-
+    @Autowired
+    private EntityManager entityManager;
     @BeforeEach
     public void cleanUp() {
         couponRepository.deleteAllIssuedCoupon();
@@ -60,6 +62,8 @@ public class OrderPaymentFacadeTest {
         couponRepository.deleteAll();
         productRepository.deleteAll();
         userRepository.deleteAll();
+        entityManager.clear();
+
     }
     @Test
     public void 주문_결제_성공통합테스트() {
@@ -100,7 +104,7 @@ public class OrderPaymentFacadeTest {
                 .coupon(coupon)
                 .build());
         //when
-        OrderPayResult result = orderPayFacade.orderPay(new OrderPayCriteria(user.getId(),reqOrderItems, issuedCoupon.getId()));
+        OrderPayResult result = orderPayFacade.orderPay(new OrderPayCriteria(user,reqOrderItems, issuedCoupon.getId()));
         //then
         assertThat(result.discountAmount()).isEqualTo(5000);
         assertThat(result.totalAmount()).isEqualTo(95000);

@@ -34,10 +34,13 @@ public class ProductServiceIntegrationTest {
     EntityManager entityManager;
     @Autowired
     OrderRepository orderRepository;
+
     @BeforeEach
     public void setUp() {
         productRepository.deleteAll();
         productRepository.deleteAllStock();
+        orderRepository.deleteAll();
+        entityManager.clear();
     }
     @Test
     public void 상품이름_필터조건_조회성공() {

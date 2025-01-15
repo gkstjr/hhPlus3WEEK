@@ -43,28 +43,15 @@ public class OrderServiceUnitTest {
     private CouponRepository couponRepository;
 
     @Test
-    public void 주문한_사용자가_없으면_USER_NOT_FOUND반환() {
-        //given
-        long findUserId = 1L;
-        when(userRepository.findById(findUserId)).thenReturn(Optional.empty());
-
-        //then
-        //when
-        assertThatThrownBy(()-> orderService.order(new OrderCommand(findUserId,List.of(),null)))
-                .isInstanceOf(BusinessException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_NOT_FOUND);
-    }
-
-    @Test
     public void 주문시_발급쿠폰ID가_유효하지_않으면_ISSUEDCOUPON_NOT_FOUND() {
         //given
         long userId = 1L;
+        User user = User.builder().id(userId).build();
         long issuedCouponId = 1L;
         List<OrderItemDto> orderitems = List.of(new OrderItemDto(1L , 2));
-        OrderCommand command = new OrderCommand(userId,orderitems,issuedCouponId);
+        OrderCommand command = new OrderCommand(user,orderitems,issuedCouponId);
 
         User mockUser = mock(User.class);
-        when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
 
         Product product = Product.builder().id(1L).build();
 

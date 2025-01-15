@@ -7,6 +7,8 @@ import hhplus.ecommerce.domain.point.UserPointInfo;
 import hhplus.ecommerce.domain.point.Point;
 import hhplus.ecommerce.domain.user.UserRepository;
 import hhplus.ecommerce.domain.user.User;
+import jakarta.persistence.EntityManager;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,7 +22,14 @@ public class PointServiceIntegrationTest {
     private UserRepository userRepository;
     @Autowired
     private PointRepository pointRepository;
-
+    @Autowired
+    private EntityManager entityManager;
+    @BeforeEach
+    void before() {
+        pointRepository.deleteAll();
+        userRepository.deleteAll();
+        entityManager.clear();
+    }
     @Test
     public void 포인트조회() {
         //given

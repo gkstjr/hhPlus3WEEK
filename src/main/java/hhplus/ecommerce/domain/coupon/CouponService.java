@@ -21,9 +21,8 @@ public class CouponService {
     @Transactional
     public IssueCouponInfo issueCoupon(IssueCouponCommand issueCouponCommand) {
         Coupon getCoupon = couponRepository.findByIdWithLock(issueCouponCommand.couponId()).orElseThrow(() -> new BusinessException(ErrorCode.COUPON_NOT_FOUND));
-        User getUser =  userRepository.findById(issueCouponCommand.userId()).orElseThrow(()-> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
-        IssuedCoupon issuedCoupon = getCoupon.issue(getUser);
+        IssuedCoupon issuedCoupon = getCoupon.issue(issueCouponCommand.user());
 
         try{
             issuedCoupon = couponRepository.saveIssuedCoupon(issuedCoupon);

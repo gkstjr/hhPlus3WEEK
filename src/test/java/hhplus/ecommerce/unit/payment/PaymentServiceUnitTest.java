@@ -1,5 +1,6 @@
 package hhplus.ecommerce.unit.payment;
 
+import hhplus.ecommerce.domain.user.User;
 import hhplus.ecommerce.support.exception.BusinessException;
 import hhplus.ecommerce.support.exception.ErrorCode;
 import hhplus.ecommerce.domain.order.OrderRepository;
@@ -33,7 +34,9 @@ public class PaymentServiceUnitTest {
         //given
         long orderId = 1L;
         long userId = 1L;
-        PayCommand payCommand = new PayCommand(orderId,userId);
+        User user = User.builder().id(userId).build();
+
+        PayCommand payCommand = new PayCommand(orderId,user);
 
         when(orderRepository.findById(orderId)).thenReturn(Optional.empty());
 
@@ -48,7 +51,9 @@ public class PaymentServiceUnitTest {
         //given
         long orderId = 1L;
         long userId = 1L;
-        PayCommand payCommand = new PayCommand(orderId,userId);
+        User user = User.builder().id(userId).build();
+
+        PayCommand payCommand = new PayCommand(orderId,user);
 
         when(orderRepository.findById(orderId)).thenReturn(Optional.of(Order.builder().build()));
         when(pointRepository.findByUserIdWithLock(userId)).thenReturn(Optional.empty());
