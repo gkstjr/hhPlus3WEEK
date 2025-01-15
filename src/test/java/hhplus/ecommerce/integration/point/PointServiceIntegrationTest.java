@@ -1,12 +1,12 @@
 package hhplus.ecommerce.integration.point;
 
-import hhplus.ecommerce.point.domain.IPointRepository;
-import hhplus.ecommerce.point.domain.PointService;
-import hhplus.ecommerce.point.domain.dto.ChargePointCommand;
-import hhplus.ecommerce.point.domain.dto.UserPointInfo;
-import hhplus.ecommerce.point.domain.model.Point;
-import hhplus.ecommerce.user.domain.IUserRepository;
-import hhplus.ecommerce.user.domain.model.User;
+import hhplus.ecommerce.domain.point.PointRepository;
+import hhplus.ecommerce.domain.point.PointService;
+import hhplus.ecommerce.domain.point.ChargePointCommand;
+import hhplus.ecommerce.domain.point.UserPointInfo;
+import hhplus.ecommerce.domain.point.Point;
+import hhplus.ecommerce.domain.user.UserRepository;
+import hhplus.ecommerce.domain.user.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,17 +17,17 @@ public class PointServiceIntegrationTest {
     @Autowired
     private PointService pointService;
     @Autowired
-    private IUserRepository iUserRepository;
+    private UserRepository userRepository;
     @Autowired
-    private IPointRepository iPointRepository;
+    private PointRepository pointRepository;
 
     @Test
     public void 포인트조회() {
         //given
         String name = "기만석";
         long currentPoint = 5000;
-        User user = iUserRepository.save(getUser(name));
-        Point point =iPointRepository.save(getPoint(user, currentPoint));
+        User user = userRepository.save(getUser(name));
+        Point point = pointRepository.save(getPoint(user, currentPoint));
 
         //when
         UserPointInfo result = pointService.getUserPoint(user.getId());
@@ -42,8 +42,8 @@ public class PointServiceIntegrationTest {
         String name = "기만석";
         long currentPoint = 5000;
         long  chargePoint = 10000;
-        User user = iUserRepository.save(getUser(name));
-        Point point =iPointRepository.save(getPoint(user, currentPoint));
+        User user = userRepository.save(getUser(name));
+        Point point = pointRepository.save(getPoint(user, currentPoint));
         //when
         UserPointInfo result = pointService.chargePoint(new ChargePointCommand(user.getId(),chargePoint));
         //then

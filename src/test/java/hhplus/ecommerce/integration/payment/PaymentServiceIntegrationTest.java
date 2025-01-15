@@ -1,21 +1,21 @@
 package hhplus.ecommerce.integration.payment;
 
-import hhplus.ecommerce.order.domain.IOrderRepository;
-import hhplus.ecommerce.order.domain.model.Order;
-import hhplus.ecommerce.order.domain.model.OrderStatus;
-import hhplus.ecommerce.payment.domain.IPaymentRepository;
-import hhplus.ecommerce.payment.domain.PaymentService;
-import hhplus.ecommerce.payment.domain.dto.PayCommand;
-import hhplus.ecommerce.payment.domain.dto.PayInfo;
-import hhplus.ecommerce.point.domain.IPointRepository;
-import hhplus.ecommerce.point.domain.model.Point;
-import hhplus.ecommerce.user.domain.IUserRepository;
-import hhplus.ecommerce.user.domain.model.User;
+import hhplus.ecommerce.domain.order.OrderRepository;
+import hhplus.ecommerce.domain.order.Order;
+import hhplus.ecommerce.domain.payment.PaymentRepository;
+import hhplus.ecommerce.domain.payment.PaymentService;
+import hhplus.ecommerce.domain.payment.PayCommand;
+import hhplus.ecommerce.domain.payment.PayInfo;
+import hhplus.ecommerce.domain.point.PointRepository;
+import hhplus.ecommerce.domain.point.Point;
+import hhplus.ecommerce.domain.user.UserRepository;
+import hhplus.ecommerce.domain.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import static hhplus.ecommerce.domain.order.Order.*;
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
@@ -25,34 +25,34 @@ public class PaymentServiceIntegrationTest {
     private PaymentService paymentService;
 
     @Autowired
-    private IUserRepository iUserRepository;
+    private UserRepository userRepository;
     @Autowired
-    private IOrderRepository iOrderRepository;
+    private OrderRepository orderRepository;
 
     @Autowired
-    private IPointRepository iPointRepository;
+    private PointRepository pointRepository;
     @Autowired
-    private IPaymentRepository iPaymentRepository;
+    private PaymentRepository paymentRepository;
     @BeforeEach
     void before() {
-        iUserRepository.deleteAll();
-        iPointRepository.deleteAll();
-        iPaymentRepository.deleteAll();
-        iOrderRepository.deleteAll();
+        userRepository.deleteAll();
+        pointRepository.deleteAll();
+        paymentRepository.deleteAll();
+        orderRepository.deleteAll();
     }
     @Test
     public void 결제성공() {
         //given
-        Order order = iOrderRepository.save(
-                 Order.builder()
+        Order order = orderRepository.save(
+                 builder()
                 .totalAmount(19999)
                 .build());
         User user = User.builder()
                 .name("기만석")
                 .build();
-        iUserRepository.save(user);
+        userRepository.save(user);
 
-        Point point = iPointRepository.save(
+        Point point = pointRepository.save(
                  Point.builder()
                 .point(20000)
                 .user(user)

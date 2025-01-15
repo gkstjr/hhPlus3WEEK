@@ -1,12 +1,12 @@
 package hhplus.ecommerce.unit.payment;
 
-import hhplus.ecommerce.common.exception.BusinessException;
-import hhplus.ecommerce.common.exception.ErrorCode;
-import hhplus.ecommerce.order.domain.IOrderRepository;
-import hhplus.ecommerce.order.domain.model.Order;
-import hhplus.ecommerce.payment.domain.PaymentService;
-import hhplus.ecommerce.payment.domain.dto.PayCommand;
-import hhplus.ecommerce.point.domain.IPointRepository;
+import hhplus.ecommerce.support.exception.BusinessException;
+import hhplus.ecommerce.support.exception.ErrorCode;
+import hhplus.ecommerce.domain.order.OrderRepository;
+import hhplus.ecommerce.domain.order.Order;
+import hhplus.ecommerce.domain.payment.PaymentService;
+import hhplus.ecommerce.domain.payment.PayCommand;
+import hhplus.ecommerce.domain.point.PointRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,9 +24,9 @@ public class PaymentServiceUnitTest {
     @InjectMocks
     private PaymentService paymentService;
     @Mock
-    private IOrderRepository iOrderRepository;
+    private OrderRepository orderRepository;
     @Mock
-    private IPointRepository iPointRepository;
+    private PointRepository pointRepository;
 
     @Test
     public void 결제시_유효하지않은주문ID_ORDER_NOT_FOUND() {
@@ -35,7 +35,7 @@ public class PaymentServiceUnitTest {
         long userId = 1L;
         PayCommand payCommand = new PayCommand(orderId,userId);
 
-        when(iOrderRepository.findById(orderId)).thenReturn(Optional.empty());
+        when(orderRepository.findById(orderId)).thenReturn(Optional.empty());
 
         //when,then
         assertThatThrownBy(()-> paymentService.pay(payCommand))
@@ -50,8 +50,8 @@ public class PaymentServiceUnitTest {
         long userId = 1L;
         PayCommand payCommand = new PayCommand(orderId,userId);
 
-        when(iOrderRepository.findById(orderId)).thenReturn(Optional.of(Order.builder().build()));
-        when(iPointRepository.findByUserIdWithLock(userId)).thenReturn(Optional.empty());
+        when(orderRepository.findById(orderId)).thenReturn(Optional.of(Order.builder().build()));
+        when(pointRepository.findByUserIdWithLock(userId)).thenReturn(Optional.empty());
 
         //when,then
         assertThatThrownBy(()-> paymentService.pay(payCommand))

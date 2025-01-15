@@ -1,22 +1,19 @@
 package hhplus.ecommerce.integration.order;
 
-import hhplus.ecommerce.coupon.domain.ICouponRepository;
-import hhplus.ecommerce.coupon.domain.issuedcoupon.CouponStatus;
-import hhplus.ecommerce.coupon.domain.issuedcoupon.IIssuedCouponRepository;
-import hhplus.ecommerce.coupon.domain.issuedcoupon.IssuedCoupon;
-import hhplus.ecommerce.coupon.domain.model.Coupon;
-import hhplus.ecommerce.order.domain.IOrderRepository;
-import hhplus.ecommerce.order.domain.OrderService;
-import hhplus.ecommerce.order.domain.dto.OrderCommand;
-import hhplus.ecommerce.order.domain.dto.OrderInfo;
-import hhplus.ecommerce.order.domain.dto.OrderItemDto;
-import hhplus.ecommerce.order.domain.model.OrderProduct;
-import hhplus.ecommerce.product.domain.IProductRepository;
-import hhplus.ecommerce.product.domain.model.Product;
-import hhplus.ecommerce.product.domain.stock.IProductStockRepository;
-import hhplus.ecommerce.product.domain.stock.ProductStock;
-import hhplus.ecommerce.user.domain.IUserRepository;
-import hhplus.ecommerce.user.domain.model.User;
+import hhplus.ecommerce.domain.coupon.CouponRepository;
+import hhplus.ecommerce.domain.coupon.IssuedCoupon;
+import hhplus.ecommerce.domain.coupon.Coupon;
+import hhplus.ecommerce.domain.order.OrderRepository;
+import hhplus.ecommerce.domain.order.OrderService;
+import hhplus.ecommerce.domain.order.OrderCommand;
+import hhplus.ecommerce.domain.order.OrderInfo;
+import hhplus.ecommerce.domain.order.OrderItemDto;
+import hhplus.ecommerce.domain.order.OrderProduct;
+import hhplus.ecommerce.domain.product.ProductRepository;
+import hhplus.ecommerce.domain.product.Product;
+import hhplus.ecommerce.domain.product.ProductStock;
+import hhplus.ecommerce.domain.user.UserRepository;
+import hhplus.ecommerce.domain.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +21,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.util.List;
+
+import static hhplus.ecommerce.domain.coupon.IssuedCoupon.*;
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
@@ -31,28 +30,24 @@ public class OrderServiceIntegrationTest {
     @Autowired
     OrderService orderService;
     @Autowired
-    IOrderRepository iOrderRepository;
+    OrderRepository orderRepository;
+
     @Autowired
-    IProductStockRepository iProductStockRepository;
+    UserRepository userRepository;
     @Autowired
-    IUserRepository iUserRepository;
+    ProductRepository productRepository;
     @Autowired
-    IProductRepository iProductRepository;
-    @Autowired
-    IIssuedCouponRepository iIssuedCouponRepository;
-    @Autowired
-    ICouponRepository iCouponRepository;
+    CouponRepository couponRepository;
 
     @BeforeEach
     public void setUp() {
         //삭제
-        iProductRepository.deleteAll();
-        iOrderRepository.deleteAll();
-        iUserRepository.deleteAll();
-        iIssuedCouponRepository.deleteAll();
-        iCouponRepository.deleteAll();
-        iProductStockRepository.deleteAll();
-
+        productRepository.deleteAll();
+        orderRepository.deleteAll();
+        userRepository.deleteAll();
+        couponRepository.deleteAllIssuedCoupon();
+        couponRepository.deleteAll();
+        productRepository.deleteAllStock();
     }
 
     @Test
@@ -61,13 +56,13 @@ public class OrderServiceIntegrationTest {
         User user = User.builder()
                 .name("기만석")
                 .build();
-        user = iUserRepository.save(user);
+        user = userRepository.save(user);
 
         List<Product> products = List.of(
                 getProduct("상품1",5000,getProductStock(10)),
                 getProduct("상품2",10000,getProductStock(5))
         );
-        products = iProductRepository.saveAll(products);
+        products = productRepository.saveAll(products);
 
         List<OrderItemDto> orderItems = List.of(
                 new OrderItemDto(products.get(0).getId(),10),
@@ -84,12 +79,12 @@ public class OrderServiceIntegrationTest {
     @Test
     public void 주문성공_쿠폰o() {
         //given
-        User user = iUserRepository.save(
+        User user = userRepository.save(
                              User.builder()
                             .name("기만석")
                             .build()
                     );
-        List<Product> products = iProductRepository.saveAll(List.of(
+        List<Product> products = productRepository.saveAll(List.of(
                                                     getProduct("상품1",5000,getProductStock(10)),
                                                     getProduct("상품2",10000,getProductStock(5))
                                 ));
@@ -105,14 +100,14 @@ public class OrderServiceIntegrationTest {
                 .maxIssuedCount(20)
                 .validUntil(LocalDate.now().plusDays(1))
                 .build();
-        iCouponRepository.save(coupon);
+        couponRepository.save(coupon);
 
         IssuedCoupon issuedCoupon =
-                IssuedCoupon.builder()
+                builder()
                         .status(CouponStatus.UNUSED)
                         .coupon(coupon)
                         .build();
-        iIssuedCouponRepository.save(issuedCoupon);
+        couponRepository.saveIssuedCoupon(issuedCoupon);
 
         OrderCommand command = new OrderCommand(user.getId(),reqOrderItems,issuedCoupon.getId());
         //when

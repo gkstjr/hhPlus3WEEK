@@ -1,10 +1,10 @@
 package hhplus.ecommerce.unit.coupon;
 
-import hhplus.ecommerce.common.exception.BusinessException;
-import hhplus.ecommerce.common.exception.ErrorCode;
-import hhplus.ecommerce.coupon.domain.issuedcoupon.IssuedCoupon;
-import hhplus.ecommerce.coupon.domain.model.Coupon;
-import hhplus.ecommerce.user.domain.model.User;
+import hhplus.ecommerce.support.exception.BusinessException;
+import hhplus.ecommerce.support.exception.ErrorCode;
+import hhplus.ecommerce.domain.coupon.IssuedCoupon;
+import hhplus.ecommerce.domain.coupon.Coupon;
+import hhplus.ecommerce.domain.user.User;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -23,7 +23,7 @@ public class CouponUnitTest {
                 .build();
         //when
         //then
-        assertThatThrownBy(() -> IssuedCoupon.issue(issueCoupon,user))
+        assertThatThrownBy(() -> issueCoupon.issue(user))
                 .isInstanceOf(BusinessException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.COUPON_MAX_ISSUE);
     }
@@ -39,7 +39,7 @@ public class CouponUnitTest {
                 .build();
         //when
         //then
-        assertThatThrownBy(() -> IssuedCoupon.issue(issueCoupon,user))
+        assertThatThrownBy(() -> issueCoupon.issue(user))
                 .isInstanceOf(BusinessException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.COUPON_EXPIRED_ISSUE);
     }
@@ -57,7 +57,7 @@ public class CouponUnitTest {
                 .build();
 
         //when
-        IssuedCoupon result = IssuedCoupon.issue(issueCoupon,user);
+        IssuedCoupon result = issueCoupon.issue(user);
 
         //then
         assertThat(result.getCoupon().getIssuedCount()).isEqualTo(currentIssueCnt + 1);

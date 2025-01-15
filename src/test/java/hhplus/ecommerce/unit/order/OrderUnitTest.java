@@ -1,21 +1,21 @@
 package hhplus.ecommerce.unit.order;
 
-import hhplus.ecommerce.common.exception.BusinessException;
-import hhplus.ecommerce.common.exception.ErrorCode;
-import hhplus.ecommerce.coupon.domain.issuedcoupon.CouponStatus;
-import hhplus.ecommerce.coupon.domain.issuedcoupon.IssuedCoupon;
-import hhplus.ecommerce.coupon.domain.model.Coupon;
-import hhplus.ecommerce.order.domain.model.Order;
-import hhplus.ecommerce.order.domain.model.OrderProduct;
-import hhplus.ecommerce.order.domain.model.OrderStatus;
-import hhplus.ecommerce.product.domain.model.Product;
-import hhplus.ecommerce.product.domain.stock.ProductStock;
-import hhplus.ecommerce.user.domain.model.User;
+import hhplus.ecommerce.support.exception.BusinessException;
+import hhplus.ecommerce.support.exception.ErrorCode;
+import hhplus.ecommerce.domain.coupon.IssuedCoupon;
+import hhplus.ecommerce.domain.coupon.Coupon;
+import hhplus.ecommerce.domain.order.Order;
+import hhplus.ecommerce.domain.order.OrderProduct;
+import hhplus.ecommerce.domain.product.Product;
+import hhplus.ecommerce.domain.product.ProductStock;
+import hhplus.ecommerce.domain.user.User;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+
+import static hhplus.ecommerce.domain.coupon.IssuedCoupon.*;
 import static org.assertj.core.api.Assertions.*;
 
 public class OrderUnitTest {
@@ -52,7 +52,7 @@ public class OrderUnitTest {
     @Test
     public void 쿠폰사용주문시_이미사용한쿠폰이면_ALREADY_USE_COUPON() {
 
-        IssuedCoupon issuedCoupon = IssuedCoupon.builder()
+        IssuedCoupon issuedCoupon = builder()
                 .status(CouponStatus.USED)
                 .build();
         //when
@@ -68,7 +68,7 @@ public class OrderUnitTest {
                 .validUntil(LocalDate.now().minusDays(1))
                 .build();
 
-        IssuedCoupon issuedCoupon = IssuedCoupon.builder()
+        IssuedCoupon issuedCoupon = builder()
                 .status(CouponStatus.UNUSED)
                 .coupon(coupon)
                 .build();
@@ -105,7 +105,7 @@ public class OrderUnitTest {
         Order order = Order.createOrder(user,orderProducts,getProductStocks);
         //then
         assertThat(user).isEqualTo(order.getUser());
-        assertThat(order.getStatus()).isEqualTo(OrderStatus.PAYMENT_PENDING);
+        assertThat(order.getStatus()).isEqualTo(Order.OrderStatus.PAYMENT_PENDING);
         assertThat(order.getTotalAmount()).isEqualTo(65000);
     }
     @Test
@@ -116,7 +116,7 @@ public class OrderUnitTest {
                 .validUntil(LocalDate.now().plusDays(1))
                 .build();
 
-        IssuedCoupon issuedCoupon = IssuedCoupon.builder()
+        IssuedCoupon issuedCoupon = builder()
                 .status(CouponStatus.UNUSED)
                 .coupon(coupon)
                 .build();

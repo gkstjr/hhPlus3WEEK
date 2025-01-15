@@ -1,11 +1,11 @@
 package hhplus.ecommerce.unit.product;
 
-import hhplus.ecommerce.product.domain.IProductRepository;
-import hhplus.ecommerce.product.domain.ProductService;
-import hhplus.ecommerce.product.domain.dto.GetProductsByFilterCommand;
-import hhplus.ecommerce.product.domain.dto.GetProductsByFilterInfo;
-import hhplus.ecommerce.product.domain.model.Product;
-import hhplus.ecommerce.product.domain.stock.ProductStock;
+import hhplus.ecommerce.domain.product.ProductRepository;
+import hhplus.ecommerce.domain.product.ProductService;
+import hhplus.ecommerce.domain.product.GetProductsByFilterCommand;
+import hhplus.ecommerce.domain.product.GetProductsByFilterInfo;
+import hhplus.ecommerce.domain.product.Product;
+import hhplus.ecommerce.domain.product.ProductStock;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,7 +27,7 @@ public class ProductServiceUnitTest {
     @InjectMocks
     private  ProductService productService;
     @Mock
-    private IProductRepository iProductRepository;
+    private ProductRepository productRepository;
 
     @Test
     public void 상품조회결과없으면_빈리스트반환() {
@@ -36,7 +36,7 @@ public class ProductServiceUnitTest {
         long minPrice = 1000;
         long maxPrice = 100000;
 
-        Mockito.when(iProductRepository.findByProductWithStockByFilter(name , minPrice , maxPrice , Pageable.unpaged()))
+        Mockito.when(productRepository.findByProductWithStockByFilter(name , minPrice , maxPrice , Pageable.unpaged()))
                 .thenReturn(Page.empty());
         //when
         Page<GetProductsByFilterInfo> result = productService.getProductsByFilter(new GetProductsByFilterCommand(name , minPrice ,maxPrice), Pageable.unpaged());
@@ -58,7 +58,7 @@ public class ProductServiceUnitTest {
 
         Page<Product> mockProducts = new PageImpl<>(products, PageRequest.of(0,10), products.size());
 
-        Mockito.when(iProductRepository.findByProductWithStockByFilter(null , null ,null,PageRequest.of(0,10)))
+        Mockito.when(productRepository.findByProductWithStockByFilter(null , null ,null,PageRequest.of(0,10)))
                 .thenReturn(mockProducts);
 
         //when

@@ -1,11 +1,11 @@
 package hhplus.ecommerce.unit.payment;
 
-import hhplus.ecommerce.common.exception.BusinessException;
-import hhplus.ecommerce.common.exception.ErrorCode;
-import hhplus.ecommerce.order.domain.model.Order;
-import hhplus.ecommerce.payment.domain.model.Payment;
-import hhplus.ecommerce.point.domain.model.Point;
-import hhplus.ecommerce.user.domain.model.User;
+import hhplus.ecommerce.support.exception.BusinessException;
+import hhplus.ecommerce.support.exception.ErrorCode;
+import hhplus.ecommerce.domain.order.Order;
+import hhplus.ecommerce.domain.payment.Payment;
+import hhplus.ecommerce.domain.point.Point;
+import hhplus.ecommerce.domain.user.User;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;

@@ -1,13 +1,13 @@
 package hhplus.ecommerce.unit.point;
 
-import hhplus.ecommerce.common.exception.BusinessException;
-import hhplus.ecommerce.common.exception.ErrorCode;
-import hhplus.ecommerce.point.domain.IPointRepository;
-import hhplus.ecommerce.point.domain.PointService;
-import hhplus.ecommerce.point.domain.dto.ChargePointCommand;
-import hhplus.ecommerce.point.domain.dto.UserPointInfo;
-import hhplus.ecommerce.point.domain.model.Point;
-import hhplus.ecommerce.user.domain.model.User;
+import hhplus.ecommerce.support.exception.BusinessException;
+import hhplus.ecommerce.support.exception.ErrorCode;
+import hhplus.ecommerce.domain.point.PointRepository;
+import hhplus.ecommerce.domain.point.PointService;
+import hhplus.ecommerce.domain.point.ChargePointCommand;
+import hhplus.ecommerce.domain.point.UserPointInfo;
+import hhplus.ecommerce.domain.point.Point;
+import hhplus.ecommerce.domain.user.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,12 +24,12 @@ public class PointServiceUnitTest {
     @InjectMocks
     private PointService pointService;
     @Mock
-    private IPointRepository iPointRepository;
+    private PointRepository pointRepository;
     @Test
     public void 존재하지않는_사용자포인트조회시_PointNotFound반환() {
         //given
         long userId = 1L;
-        Mockito.when(iPointRepository.findByUserId(userId)).thenReturn(Optional.empty());
+        Mockito.when(pointRepository.findByUserId(userId)).thenReturn(Optional.empty());
         //when
         //then
         assertThatThrownBy(() -> pointService.getUserPoint(userId))
@@ -46,7 +46,7 @@ public class PointServiceUnitTest {
         User user = getUser(userId , "기만석");
         Point returnPoint = getPoint(pointId, user, point);
 
-        Mockito.when(iPointRepository.findByUserId(userId)).thenReturn(Optional.of(returnPoint));
+        Mockito.when(pointRepository.findByUserId(userId)).thenReturn(Optional.of(returnPoint));
         //when
         UserPointInfo result = pointService.getUserPoint(userId);
 
@@ -69,7 +69,7 @@ public class PointServiceUnitTest {
         long chargePoint2 = 10000001;
         Point point = getPoint(pointId,user,currentPoint);
 
-        Mockito.when(iPointRepository.findByUserId(userId)).thenReturn(Optional.of(point));
+        Mockito.when(pointRepository.findByUserId(userId)).thenReturn(Optional.of(point));
         //when
         //then
         assertThatThrownBy(()-> pointService.chargePoint(new ChargePointCommand(userId,chargePoint1)))
@@ -93,7 +93,7 @@ public class PointServiceUnitTest {
         long chargePoint = 10000000;
         Point point = getPoint(pointId,user,currentPoint);
 
-        Mockito.when(iPointRepository.findByUserId(userId)).thenReturn(Optional.of(point));
+        Mockito.when(pointRepository.findByUserId(userId)).thenReturn(Optional.of(point));
         //when
         //then
         assertThatThrownBy(()-> pointService.chargePoint(new ChargePointCommand(userId,chargePoint)))
@@ -113,7 +113,7 @@ public class PointServiceUnitTest {
         long chargePoint = 5000;
         Point point = getPoint(pointId,user,currentPoint);
 
-        Mockito.when(iPointRepository.findByUserId(userId)).thenReturn(Optional.of(point));
+        Mockito.when(pointRepository.findByUserId(userId)).thenReturn(Optional.of(point));
         //when
         UserPointInfo result = pointService.chargePoint(new ChargePointCommand(userId,chargePoint));
 
