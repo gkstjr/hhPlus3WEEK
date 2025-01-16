@@ -8,12 +8,10 @@ public record OrderInfo(
         long orderId,
         long totalAmount,
         long userId,
-
-        IssuedCoupon issuedCoupon,
         List<OrderProduct> orderProducts
 
 ) {
     public static OrderInfo from(Order order) {
-        return new OrderInfo(order.getId(), order.getTotalAmount(),order.getUser().getId() , order.getIssuedCoupon(), order.getOrderProductList());
+        return new OrderInfo(order.getId(), order.getTotalAmount(),order.getUser().getId() , order.getOrderProductList());
     }
 }

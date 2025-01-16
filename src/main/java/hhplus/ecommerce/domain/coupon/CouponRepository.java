@@ -17,7 +17,7 @@ public interface CouponRepository {
 
     void deleteAllIssuedCoupon();
 
-    Optional<IssuedCoupon> findByIssuedCouponIdWithCoupon(Long issuedCouponId);
+    Optional<IssuedCoupon> findByIssuedCouponIdWithCoupon(Long issuedCouponId,Long userId);
 
     List<IssuedCoupon> findAllIssuedCouponByUserId(long userId);
 }

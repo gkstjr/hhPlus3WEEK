@@ -1,6 +1,8 @@
 package hhplus.ecommerce.application.order;
 
+import hhplus.ecommerce.domain.order.Order;
 import hhplus.ecommerce.domain.order.OrderInfo;
+import hhplus.ecommerce.domain.order.OrderProduct;
 import hhplus.ecommerce.domain.payment.PayInfo;
 
 import java.util.List;
@@ -17,8 +19,8 @@ public record OrderPayResult(
         List<OrderProductDto> orderProducts
 
 ) {
-    public static OrderPayResult of(OrderInfo orderInfo, PayInfo payInfo) {
-        List<OrderProductDto> orderProductDtos = orderInfo.orderProducts().stream()
+    public static OrderPayResult of(Order order, PayInfo payInfo , long discountAmount , long remindPoint) {
+        List<OrderProductDto> orderProductDtos = order.getOrderProductList().stream()
                 .map(orderProduct -> new OrderProductDto(
                         orderProduct.getProduct().getId(),
                         orderProduct.getProduct().getName(),
@@ -28,12 +30,12 @@ public record OrderPayResult(
                 .toList();
 
         return new OrderPayResult(
-                orderInfo.orderId(),
-                orderInfo.userId(),
-                orderInfo.totalAmount(),
-                orderInfo.issuedCoupon().getCoupon().getDiscountPrice(),
-                payInfo.remindPoint(),
-                payInfo.orderStatus(),
+                order.getId(),
+                order.getUser().getId(),
+                order.getTotalAmount(),
+                discountAmount,
+                remindPoint,
+                order.getStatus(),
                 orderProductDtos
         );    }
 }

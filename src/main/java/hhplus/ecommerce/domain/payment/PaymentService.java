@@ -18,12 +18,9 @@ public class PaymentService {
     private final PaymentRepository paymentRepository;
 
     @Transactional
-    public PayInfo pay(PayCommand payCommand) {
-        Order getOrder = orderRepository.findById(payCommand.orderId()).orElseThrow(() -> new BusinessException(ErrorCode.ORDER_NOT_FOUND));
-        Point getPoint =  pointRepository.findByUserIdWithLock(payCommand.user().getId()).orElseThrow(()-> new BusinessException(ErrorCode.POINT_NOT_FOUND));
+    public PayInfo pay(PayCommand command) {
+        Payment payment = Payment.createPay(command.order() , command.user(),command.discountAmount());
 
-        Payment payment = paymentRepository.save(Payment.createPay(getOrder , getPoint));
-
-        return PayInfo.from(payment);
+        return PayInfo.from(paymentRepository.save(payment));
     }
 }

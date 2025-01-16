@@ -31,12 +31,16 @@ public class Payment extends BaseEntity {
         this.amount = totalAmount;
     }
 
-    public static Payment createPay(Order getOrder, Point getPoint) {
-        getPoint.subtractPoint(getOrder.getTotalAmount());
-        getPoint.getUser().addPoint(getPoint);
+    public static Payment createPay(Order order , User user , long discountAmount) {
+        Payment payment = new Payment();
 
-        getOrder.completePay();
+        long amount = order.getTotalAmount() - discountAmount;
+        if(amount < 0) amount = 0;
+        order.completePay();
 
-        return new Payment(getOrder , getPoint.getUser() , getOrder.getTotalAmount());
+        payment.order = order;
+        payment.user = user;
+        payment.amount = amount;
+        return payment;
     }
 }

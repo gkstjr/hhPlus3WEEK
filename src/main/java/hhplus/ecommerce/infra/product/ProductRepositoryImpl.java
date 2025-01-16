@@ -42,6 +42,18 @@ public class ProductRepositoryImpl implements ProductRepository {
         return jpaProductRepository.save(product);
     }
 
+    @Override
+    public Map<Long, Product> findAllByProductIdIn(List<Long> productIds) {
+        List<Product> products = jpaProductRepository.findAllByIdIn(productIds);
+
+        if (products.isEmpty()) {
+            throw new BusinessException(ErrorCode.PRODUCT_NOT_FOUND);
+        }
+
+        return products.stream()
+                .collect(Collectors.toMap(product -> product.getId(), Function.identity()));
+    }
+
     //상품재고
     @Override
     public void deleteAllStock() {
@@ -49,8 +61,8 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public Map<Long, ProductStock> findAllByProductIdInWithLock(List<Long> produceIds) {
-        List<ProductStock> stocks = jpaStockRepository.findAllByProductIdInWithLock(produceIds);
+    public Map<Long, ProductStock> findAllStockByProductIdInWithLock(List<Long> produceIds) {
+        List<ProductStock> stocks = jpaStockRepository.findAllStockByProductIdInWithLock(produceIds);
 
         if (stocks.isEmpty()) {
             throw new BusinessException(ErrorCode.PRODUCT_NOT_FOUND);

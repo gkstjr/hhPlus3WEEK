@@ -1,6 +1,6 @@
 package hhplus.ecommerce.domain.order;
 
-public record OrderItemDto(
+public record OrderPayDto(
         long productId,
         int quantity
 ) {

@@ -35,7 +35,9 @@ public class OrderProduct extends BaseEntity {
     public void addOrder(Order order) {
         this.order = order;
     }
-
+    public long calculateTotalPrice() {
+        return (long) quantity * price;
+    }
     @Builder
     public OrderProduct(Long id, Order order, Product product, int quantity, int price) {
         this.id = id;

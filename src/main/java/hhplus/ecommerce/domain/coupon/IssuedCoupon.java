@@ -36,15 +36,14 @@ public class IssuedCoupon extends BaseEntity {
         this.status = CouponStatus.UNUSED;
     }
 
-    public void ValidatedUse(IssuedCoupon issuedCoupon) {
+    public long validatedUse() {
         if(status.equals(CouponStatus.USED)) throw new BusinessException(ErrorCode.ALREADY_USE_COUPON);
-        issuedCoupon.coupon.validateDate();
+        this.coupon.validateDate();
+        this.status = CouponStatus.USED;
+        return this.coupon.getDiscountPrice();
     }
 
-    public void statusUsed() {
-        status = CouponStatus.USED;
-    }
-    //테스트용(setter는 최대한 지양하자...)
+
     public void setId(long id) {
         this.id = id;
     }
@@ -56,6 +55,9 @@ public class IssuedCoupon extends BaseEntity {
         this.coupon = coupon;
         this.status = status;
     }
+
+
+
     public static enum CouponStatus {
 
         UNUSED, //사용하지 않음

@@ -12,5 +12,5 @@ import java.util.List;
 public interface JpaStockRepository extends JpaRepository<ProductStock,Long> {
     @Query("SELECT ps FROM ProductStock ps join fetch ps.product p where ps.product.id in :productIds")
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    List<ProductStock> findAllByProductIdInWithLock(@Param("productIds") List<Long> produceIds);
+    List<ProductStock> findAllStockByProductIdInWithLock(@Param("productIds") List<Long> produceIds);
 }

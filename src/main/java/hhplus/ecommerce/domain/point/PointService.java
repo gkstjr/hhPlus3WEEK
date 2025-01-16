@@ -1,5 +1,6 @@
 package hhplus.ecommerce.domain.point;
 
+import hhplus.ecommerce.domain.payment.Payment;
 import hhplus.ecommerce.domain.user.User;
 import hhplus.ecommerce.support.exception.BusinessException;
 import hhplus.ecommerce.support.exception.ErrorCode;
@@ -28,5 +29,13 @@ public class PointService {
         point.charge(command.chargePoint());
 
         return UserPointInfo.of(point);
+    }
+
+    public long usePoint(UsePointCommand command) {
+        Point getPoint =  pointRepository.findByUserIdWithLock(command.user().getId()).orElseThrow(()-> new BusinessException(ErrorCode.POINT_NOT_FOUND));
+
+        getPoint.subtractPoint(command.totalAmount());
+
+        return getPoint.getPoint();
     }
 }

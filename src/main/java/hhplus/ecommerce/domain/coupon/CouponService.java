@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,5 +43,12 @@ public class CouponService {
                 .collect(Collectors.toList());
 
         return result;
+    }
+
+    public long useCoupon(UseCouponCommand command) {
+        if(Objects.isNull(command.issuedCouponId())) return 0;
+        IssuedCoupon issuedCoupon = couponRepository.findByIssuedCouponIdWithCoupon(command.issuedCouponId(), command.user().getId()).orElseThrow(() -> new BusinessException(ErrorCode.ISSUEDCOUPON_NOT_FOUND));
+
+        return issuedCoupon.validatedUse();
     }
 }

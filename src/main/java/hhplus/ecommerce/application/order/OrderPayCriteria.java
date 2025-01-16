@@ -1,25 +1,22 @@
 package hhplus.ecommerce.application.order;
 
 import hhplus.ecommerce.domain.order.OrderCommand;
-import hhplus.ecommerce.domain.order.OrderItemDto;
+import hhplus.ecommerce.domain.order.OrderPayDto;
 import hhplus.ecommerce.domain.payment.PayCommand;
+import hhplus.ecommerce.domain.product.OrderProductsCommand;
 import hhplus.ecommerce.domain.user.User;
 
 import java.util.List;
 
 public record OrderPayCriteria(
         User user ,
-        List<OrderItemDto> orderItems,
+        List<OrderPayDto> orderItems,
 
         Long issuedCouponId
 ) {
 
-    public OrderCommand toOrderCommand() {
-        return new OrderCommand(user, orderItems, issuedCouponId);
-    }
-
-    public PayCommand toPayCommand(Long orderId) {
-        return new PayCommand(orderId, user);
+    public OrderProductsCommand toGetStocksWithProductCommand(){
+      return new OrderProductsCommand(orderItems);
     }
 
 }

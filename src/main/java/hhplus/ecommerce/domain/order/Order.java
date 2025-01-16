@@ -42,36 +42,23 @@ public class Order extends BaseEntity {
     private IssuedCoupon issuedCoupon;
 
     //쿠폰발급이력
-    public static Order createOrder(User user, List<OrderProduct> orderProducts, Map<Long, ProductStock> getProductStocks) {
+    public static Order createOrder(User user, List<OrderProduct> orderProducts) {
         Order order = new Order();
         order.user = user;
         order.status = OrderStatus.PAYMENT_PENDING;
 
-
-        for(OrderProduct orderProduct : orderProducts) {
-            ProductStock stock = getProductStocks.get(orderProduct.getProduct().getId());
-            if(stock == null) throw new BusinessException(ErrorCode.PRODUCT_NOT_FOUND);
-
-            stock.decreaseStock(orderProduct.getQuantity());
-
-            order.totalAmount += stock.getProduct().getPrice() * orderProduct.getQuantity();
-            order.addOrderProduct(orderProduct);
-        }
+        order.totalAmount = orderProducts.stream()
+                .peek(order::addOrderProduct)
+                .peek(dto -> System.out.println(dto.getQuantity()+"/" + dto.getProduct().getPrice()))
+                .mapToLong(OrderProduct::calculateTotalPrice)
+                .sum();
+        System.out.println("totalAmount = " + order.totalAmount);
         return order;
     }
 
     public void addOrderProduct(OrderProduct orderProduct) {
         orderProductList.add(orderProduct);
         orderProduct.addOrder(this); // 양방향 연관관계 설정
-    }
-
-    public void useCoupon(IssuedCoupon issuedCoupon) {
-        issuedCoupon.ValidatedUse(issuedCoupon);
-
-        totalAmount-= issuedCoupon.getCoupon().getDiscountPrice();
-        if(totalAmount < 0) totalAmount = 0;
-        issuedCoupon.statusUsed();
-        this.issuedCoupon = issuedCoupon;
     }
 
     public void completePay() {

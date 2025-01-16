@@ -38,7 +38,6 @@ public class Point extends BaseEntity {
     public void subtractPoint(long totalAmount) {
         validateOverPoint(totalAmount);
         point -= totalAmount;
-        System.out.println("포인트 = " + point);
     }
 
     private void validateOverPoint(long amount) {

@@ -7,7 +7,7 @@ import hhplus.ecommerce.support.exception.ErrorCode;
 import hhplus.ecommerce.domain.order.OrderRepository;
 import hhplus.ecommerce.domain.order.OrderService;
 import hhplus.ecommerce.domain.order.OrderCommand;
-import hhplus.ecommerce.domain.order.OrderItemDto;
+import hhplus.ecommerce.domain.order.OrderPayDto;
 import hhplus.ecommerce.domain.order.OrderProduct;
 import hhplus.ecommerce.domain.product.Product;
 import hhplus.ecommerce.domain.product.ProductStock;
@@ -42,32 +42,7 @@ public class OrderServiceUnitTest {
     @Mock
     private CouponRepository couponRepository;
 
-    @Test
-    public void 주문시_발급쿠폰ID가_유효하지_않으면_ISSUEDCOUPON_NOT_FOUND() {
-        //given
-        long userId = 1L;
-        User user = User.builder().id(userId).build();
-        long issuedCouponId = 1L;
-        List<OrderItemDto> orderitems = List.of(new OrderItemDto(1L , 2));
-        OrderCommand command = new OrderCommand(user,orderitems,issuedCouponId);
 
-        User mockUser = mock(User.class);
-
-        Product product = Product.builder().id(1L).build();
-
-        OrderProduct orderProduct = new OrderProduct(product, 2);
-
-        Map<Long, ProductStock> productStocks = Map.of(1L, ProductStock.builder().product(product).stock(10).build());
-        when(productRepository.findAllByProductIdInWithLock(Mockito.anyList())).thenReturn(productStocks);
-        when(couponRepository.findByIssuedCouponIdWithCoupon(issuedCouponId)).thenReturn(Optional.empty());
-
-        //then
-        //when
-        assertThatThrownBy(() -> orderService.order(command))
-                .isInstanceOf(BusinessException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.ISSUEDCOUPON_NOT_FOUND);
-
-    }
 
     private static ProductStock getProductStock(int stock) {
         return ProductStock.builder()

@@ -24,29 +24,10 @@ public class OrderService {
     private final CouponRepository couponRepository;
 
     @Transactional
-    public OrderInfo order(OrderCommand command) {
-        User user = command.user();
+    public Order order(OrderCommand command) {
 
-        Map<Long, ProductStock> getProductStocks = productRepository.findAllByProductIdInWithLock(
-                command.orderItems().stream().map(OrderItemDto::productId).toList()
-        );
+        Order order = Order.createOrder(command.user() , command.orderProducts());
 
-        List<OrderProduct> orderProducts = command.orderItems().stream()
-                .map(dto -> new OrderProduct(getProductStocks.get(dto.productId()).getProduct(),dto.quantity()))
-                .toList();
-
-        //주문처리
-        Order order = Order.createOrder(user , orderProducts , getProductStocks);
-
-        //쿠폰처리
-        if(command.issuedCouponId() != null) {
-            IssuedCoupon issuedCoupon = couponRepository.findByIssuedCouponIdWithCoupon(command.issuedCouponId()).orElseThrow(() -> new BusinessException(ErrorCode.ISSUEDCOUPON_NOT_FOUND));
-            order.useCoupon(issuedCoupon);
-        }
-
-        //주문 저장
-        order = orderRepository.save(order);
-
-        return OrderInfo.from(order);
+        return orderRepository.save(order);
     }
 }

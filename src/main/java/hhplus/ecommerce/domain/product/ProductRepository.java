@@ -14,9 +14,11 @@ public interface ProductRepository {
     void deleteAll();
 
     Product save(Product product);
+    Map<Long, Product> findAllByProductIdIn(List<Long> productIds);
 
     //상품재고
     void deleteAllStock();
 
-    Map<Long, ProductStock> findAllByProductIdInWithLock(List<Long> produceIds);
+    Map<Long, ProductStock> findAllStockByProductIdInWithLock(List<Long> produceIds);
+
 }
