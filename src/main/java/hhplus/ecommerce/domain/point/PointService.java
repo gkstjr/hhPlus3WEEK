@@ -1,5 +1,6 @@
 package hhplus.ecommerce.domain.point;
 
+import hhplus.ecommerce.domain.user.User;
 import hhplus.ecommerce.support.exception.BusinessException;
 import hhplus.ecommerce.support.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;

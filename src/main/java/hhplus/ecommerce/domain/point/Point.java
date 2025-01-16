@@ -51,4 +51,8 @@ public class Point extends BaseEntity {
         this.user = user;
         this.point = point;
     }
+
+    public void addUser(User user) {
+        this.user = user;
+    }
 }

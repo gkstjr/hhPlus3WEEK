@@ -1,4 +1,4 @@
-package hhplus.ecommerce.support;
+package hhplus.ecommerce.support.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;

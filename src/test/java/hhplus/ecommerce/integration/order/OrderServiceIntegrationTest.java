@@ -9,15 +9,18 @@ import hhplus.ecommerce.domain.order.OrderCommand;
 import hhplus.ecommerce.domain.order.OrderInfo;
 import hhplus.ecommerce.domain.order.OrderItemDto;
 import hhplus.ecommerce.domain.order.OrderProduct;
+import hhplus.ecommerce.domain.point.PointRepository;
 import hhplus.ecommerce.domain.product.ProductRepository;
 import hhplus.ecommerce.domain.product.Product;
 import hhplus.ecommerce.domain.product.ProductStock;
 import hhplus.ecommerce.domain.user.UserRepository;
 import hhplus.ecommerce.domain.user.User;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -38,16 +41,18 @@ public class OrderServiceIntegrationTest {
     ProductRepository productRepository;
     @Autowired
     CouponRepository couponRepository;
-
+    @Autowired
+    PointRepository pointRepository;
     @BeforeEach
     public void setUp() {
         //삭제
-        productRepository.deleteAll();
+        pointRepository.deleteAll();
         orderRepository.deleteAll();
-        userRepository.deleteAll();
         couponRepository.deleteAllIssuedCoupon();
         couponRepository.deleteAll();
         productRepository.deleteAllStock();
+        productRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
@@ -69,7 +74,7 @@ public class OrderServiceIntegrationTest {
                 new OrderItemDto(products.get(1).getId(), 5)
         );
 
-        OrderCommand orderCommand = new OrderCommand(user.getId(), orderItems , null);
+        OrderCommand orderCommand = new OrderCommand(user, orderItems , null);
         //when
         OrderInfo order = orderService.order(orderCommand);
         //then
@@ -109,7 +114,7 @@ public class OrderServiceIntegrationTest {
                         .build();
         couponRepository.saveIssuedCoupon(issuedCoupon);
 
-        OrderCommand command = new OrderCommand(user.getId(),reqOrderItems,issuedCoupon.getId());
+        OrderCommand command = new OrderCommand(user,reqOrderItems,issuedCoupon.getId());
         //when
         OrderInfo result = orderService.order(command);
         //then

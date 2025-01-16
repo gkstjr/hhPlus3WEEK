@@ -35,6 +35,10 @@ public class User extends BaseEntity {
     public void addPoint(Point getPoint) {
         point = getPoint;
     }
+    public void setPoint(Point point) {
+        this.point = point;
+        point.addUser(this);
+    }
 
     @Builder
     public User(Long id, String name, Point point, List<Order> orders, List<Payment> payments, List<IssuedCoupon> issuedCoupons) {

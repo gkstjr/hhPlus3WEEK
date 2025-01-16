@@ -18,6 +18,8 @@ public enum ErrorCode {
     //사용자
     USER_NOT_FOUND(HttpStatus.BAD_REQUEST,"존재하지 않는 사용자입니다."),
     OUT_OF_STOCK(HttpStatus.BAD_REQUEST,"상품 재고가 부족합니다." ),
+    FILTER_TEST_FAIL(HttpStatus.BAD_REQUEST,"전처리에서 유저정보를 조회하지 않습니다." ),
+
 
     //쿠폰
     COUPON_NOT_FOUND(HttpStatus.BAD_REQUEST,"쿠폰이 존재하지 않습니다." ),
