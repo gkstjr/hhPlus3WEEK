@@ -1,5 +1,9 @@
 package hhplus.ecommerce.integration.coupon;
 
+import hhplus.ecommerce.domain.order.OrderCommand;
+import hhplus.ecommerce.domain.order.OrderInfo;
+import hhplus.ecommerce.domain.order.OrderPayDto;
+import hhplus.ecommerce.domain.product.Product;
 import hhplus.ecommerce.support.exception.BusinessException;
 import hhplus.ecommerce.support.exception.ErrorCode;
 import hhplus.ecommerce.domain.coupon.CouponService;
@@ -18,12 +22,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static hhplus.ecommerce.domain.coupon.IssuedCoupon.builder;
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
@@ -91,49 +97,50 @@ public class CouponServiceIntegrationTest {
         assertThat(result.issuedCount()).isEqualTo(currentIssued + 1);
     }
 
-//    @Test
-//    public void 동시_쿠폰발급시_발급수량을_초과하면_COUPON_MAX_ISSUE_예외가_발생한다() throws InterruptedException {
-//        // given
-//        int threadCount = 5;
-//        int maxIssuedCount = 3;
-//        Coupon coupon = couponRepository.save(
-//                Coupon.builder()
-//                        .issuedCount(0)
-//                        .maxIssuedCount(maxIssuedCount)
-//                        .validUntil(LocalDate.now().plusDays(1))
-//                        .build()
-//        );
-//        for (int i = 1; i <= threadCount; i++) {
-//            userRepository.save(User.builder().name("사용자" + i).build());
-//        }
-//
-//        ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
-//        CountDownLatch latch = new CountDownLatch(threadCount);
-//        AtomicInteger successCount = new AtomicInteger();
-//        AtomicInteger failCount = new AtomicInteger();
-//
-//        // when
-//        for (int i = 0; i < threadCount; i++) {
-//            Long userId = (long) (i + 1); // 각각 다른 사용자
-//            User user = User.builder().id(userId).build();
-//            executorService.submit(() -> {
-//                try {
-//                    couponService.issueCoupon(new IssueCouponCommand(user, coupon.getId()));
-//                    successCount.incrementAndGet();
-//                } catch (Exception e) {
-//                        failCount.incrementAndGet();
-//                } finally {
-//                    latch.countDown();
-//                }
-//            });
-//        }
-//
-//        // then
-//        latch.await(5, TimeUnit.SECONDS);
-//        executorService.shutdown();
-//
-//        assertThat(successCount.get()).isEqualTo(maxIssuedCount);
-//        assertThat(failCount.get()).isEqualTo(threadCount - maxIssuedCount);
-//
-//    }
+
+    @Test
+    public void 동시_쿠폰발급시_발급수량을_초과하면_COUPON_MAX_ISSUE_예외가_발생한다() throws InterruptedException {
+        // given
+        int threadCount = 5;
+        int maxIssuedCount = 3;
+        Coupon coupon = couponRepository.save(
+                Coupon.builder()
+                        .issuedCount(0)
+                        .maxIssuedCount(maxIssuedCount)
+                        .validUntil(LocalDate.now().plusDays(1))
+                        .build()
+        );
+        for (int i = 1; i <= threadCount; i++) {
+            userRepository.save(User.builder().name("사용자" + i).build());
+        }
+
+        ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
+        CountDownLatch latch = new CountDownLatch(threadCount);
+        AtomicInteger successCount = new AtomicInteger();
+        AtomicInteger failCount = new AtomicInteger();
+
+        // when
+        for (int i = 0; i < threadCount; i++) {
+            Long userId = (long) (i + 1); // 각각 다른 사용자
+            User user = User.builder().id(userId).build();
+            executorService.submit(() -> {
+                try {
+                    couponService.issueCoupon(new IssueCouponCommand(user, coupon.getId()));
+                    successCount.incrementAndGet();
+                } catch (Exception e) {
+                        failCount.incrementAndGet();
+                } finally {
+                    latch.countDown();
+                }
+            });
+        }
+
+        // then
+        latch.await(5, TimeUnit.SECONDS);
+        executorService.shutdown();
+
+        assertThat(successCount.get()).isEqualTo(maxIssuedCount);
+        assertThat(failCount.get()).isEqualTo(threadCount - maxIssuedCount);
+
+    }
 }

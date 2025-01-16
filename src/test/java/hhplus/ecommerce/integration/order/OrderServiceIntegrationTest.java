@@ -3,24 +3,17 @@ package hhplus.ecommerce.integration.order;
 import hhplus.ecommerce.domain.coupon.CouponRepository;
 import hhplus.ecommerce.domain.coupon.IssuedCoupon;
 import hhplus.ecommerce.domain.coupon.Coupon;
-import hhplus.ecommerce.domain.order.OrderRepository;
-import hhplus.ecommerce.domain.order.OrderService;
-import hhplus.ecommerce.domain.order.OrderCommand;
-import hhplus.ecommerce.domain.order.OrderInfo;
-import hhplus.ecommerce.domain.order.OrderItemDto;
-import hhplus.ecommerce.domain.order.OrderProduct;
+import hhplus.ecommerce.domain.order.*;
 import hhplus.ecommerce.domain.point.PointRepository;
 import hhplus.ecommerce.domain.product.ProductRepository;
 import hhplus.ecommerce.domain.product.Product;
 import hhplus.ecommerce.domain.product.ProductStock;
 import hhplus.ecommerce.domain.user.UserRepository;
 import hhplus.ecommerce.domain.user.User;
-import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -56,7 +49,7 @@ public class OrderServiceIntegrationTest {
     }
 
     @Test
-    public void 주문성공_쿠폰x() {
+    public void 주문성공() {
         //given
         User user = User.builder()
                 .name("기만석")
@@ -69,60 +62,18 @@ public class OrderServiceIntegrationTest {
         );
         products = productRepository.saveAll(products);
 
-        List<OrderItemDto> orderItems = List.of(
-                new OrderItemDto(products.get(0).getId(),10),
-                new OrderItemDto(products.get(1).getId(), 5)
+        List<OrderProduct> orderItems = List.of(
+                OrderProduct.builder().product(products.get(0)).quantity(10).build(),
+                OrderProduct.builder().product(products.get(1)).quantity(5).build()
         );
 
-        OrderCommand orderCommand = new OrderCommand(user, orderItems , null);
+        OrderCommand orderCommand = new OrderCommand(user, orderItems);
         //when
-        OrderInfo order = orderService.order(orderCommand);
+        Order result = orderService.order(orderCommand);
+
         //then
-        assertThat(order.totalAmount()).isEqualTo(100000);
+        assertThat(result.getTotalAmount()).isEqualTo(100000);
     }
-
-    @Test
-    public void 주문성공_쿠폰o() {
-        //given
-        User user = userRepository.save(
-                             User.builder()
-                            .name("기만석")
-                            .build()
-                    );
-        List<Product> products = productRepository.saveAll(List.of(
-                                                    getProduct("상품1",5000,getProductStock(10)),
-                                                    getProduct("상품2",10000,getProductStock(5))
-                                ));
-
-        List<OrderItemDto> reqOrderItems = List.of(
-                new OrderItemDto(products.get(0).getId(),10),
-                new OrderItemDto(products.get(1).getId(), 5)
-        );
-        Coupon coupon = Coupon.builder()
-                .name("5000원 할인쿠폰")
-                .discountPrice(5000)
-                .issuedCount(10)
-                .maxIssuedCount(20)
-                .validUntil(LocalDate.now().plusDays(1))
-                .build();
-        couponRepository.save(coupon);
-
-        IssuedCoupon issuedCoupon =
-                builder()
-                        .status(CouponStatus.UNUSED)
-                        .coupon(coupon)
-                        .build();
-        couponRepository.saveIssuedCoupon(issuedCoupon);
-
-        OrderCommand command = new OrderCommand(user,reqOrderItems,issuedCoupon.getId());
-        //when
-        OrderInfo result = orderService.order(command);
-        //then
-        assertThat(result.totalAmount()).isEqualTo(95000);
-        assertThat(result.issuedCoupon().getStatus()).isEqualTo(CouponStatus.USED);
-
-    }
-
 
     private static OrderProduct createOrderProduct(Product product1, int quantity) {
         return OrderProduct.builder()
