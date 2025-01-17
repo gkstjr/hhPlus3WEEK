@@ -44,7 +44,7 @@ public class CouponServiceIntegrationTest {
     private EntityManager entityManager;
     @BeforeEach
     public void before() {
-      //  couponRepository.deleteAllIssuedCoupon();
+        couponRepository.deleteAllIssuedCoupon();
         couponRepository.deleteAll();
         userRepository.deleteAll();
     }

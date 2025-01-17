@@ -19,9 +19,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class OrderService {
     private final OrderRepository orderRepository;
-    private final ProductRepository productRepository;
-    private final UserRepository userRepository;
-    private final CouponRepository couponRepository;
 
     @Transactional
     public Order order(OrderCommand command) {

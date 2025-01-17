@@ -58,9 +58,9 @@ public class OrderPaymentFacadeTest {
 
     @BeforeEach
     public void cleanUp() {
-        couponRepository.deleteAllIssuedCoupon();
-        userRepository.deleteAll();
-        couponRepository.deleteAll();
+        pointRepository.deleteAll();
+//        couponRepository.deleteAllIssuedCoupon();
+//        couponRepository.deleteAll();
         productRepository.deleteAll();
     }
     @Test

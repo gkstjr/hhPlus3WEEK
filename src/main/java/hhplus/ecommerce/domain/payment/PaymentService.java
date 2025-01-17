@@ -13,8 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
-    private final OrderRepository orderRepository;
-    private final PointRepository pointRepository;
     private final PaymentRepository paymentRepository;
 
     @Transactional

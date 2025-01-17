@@ -19,12 +19,12 @@ public class ProductStock {
     @JoinColumn(name = "product_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Product product;
 
-    public void decreaseStock(int quantity) {
+    public void decreaseStock(long quantity) {
         validatedStock(quantity);
         this.stock -= quantity;
     }
 
-    private void validatedStock(int quantity) {
+    private void validatedStock(long quantity) {
         if(stock < quantity) throw new BusinessException(ErrorCode.OUT_OF_STOCK);
     }
 

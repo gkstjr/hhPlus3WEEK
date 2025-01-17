@@ -39,8 +39,8 @@ public class PointServiceIntegrationTest {
         //삭제
         pointRepository.deleteAll();
         orderRepository.deleteAll();
-        couponRepository.deleteAllIssuedCoupon();
-        couponRepository.deleteAll();
+//        couponRepository.deleteAllIssuedCoupon();
+//        couponRepository.deleteAll();
         productRepository.deleteAllStock();
         productRepository.deleteAll();
         userRepository.deleteAll();

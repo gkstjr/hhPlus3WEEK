@@ -41,11 +41,11 @@ public class OrderServiceIntegrationTest {
         //삭제
         pointRepository.deleteAll();
         orderRepository.deleteAll();
-        couponRepository.deleteAllIssuedCoupon();
-        couponRepository.deleteAll();
+//        couponRepository.deleteAllIssuedCoupon();
+//        couponRepository.deleteAll();
+        userRepository.deleteAll();
         productRepository.deleteAllStock();
         productRepository.deleteAll();
-        userRepository.deleteAll();
     }
 
     @Test
@@ -63,8 +63,8 @@ public class OrderServiceIntegrationTest {
         products = productRepository.saveAll(products);
 
         List<OrderProduct> orderItems = List.of(
-                OrderProduct.builder().product(products.get(0)).quantity(10).build(),
-                OrderProduct.builder().product(products.get(1)).quantity(5).build()
+                OrderProduct.builder().product(products.get(0)).quantity(10).price(products.get(0).getPrice()).build(),
+                OrderProduct.builder().product(products.get(1)).quantity(5).price(products.get(1).getPrice()).build()
         );
 
         OrderCommand orderCommand = new OrderCommand(user, orderItems);
