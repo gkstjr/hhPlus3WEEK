@@ -1,15 +1,14 @@
 package hhplus.ecommerce.integration.product;
 
-import hhplus.ecommerce.order.domain.IOrderProductRepository;
-import hhplus.ecommerce.order.domain.model.OrderProduct;
-import hhplus.ecommerce.product.domain.IProductRepository;
-import hhplus.ecommerce.product.domain.dto.GetProductsByFilterInfo;
-import hhplus.ecommerce.product.domain.dto.PopularProductDto;
-import hhplus.ecommerce.product.domain.stock.IProductStockRepository;
-import hhplus.ecommerce.product.domain.ProductService;
-import hhplus.ecommerce.product.domain.dto.GetProductsByFilterCommand;
-import hhplus.ecommerce.product.domain.model.Product;
-import hhplus.ecommerce.product.domain.stock.ProductStock;
+import hhplus.ecommerce.domain.order.OrderProduct;
+import hhplus.ecommerce.domain.order.OrderRepository;
+import hhplus.ecommerce.domain.product.ProductRepository;
+import hhplus.ecommerce.domain.product.GetProductsByFilterInfo;
+import hhplus.ecommerce.domain.product.PopularProductDto;
+import hhplus.ecommerce.domain.product.ProductService;
+import hhplus.ecommerce.domain.product.GetProductsByFilterCommand;
+import hhplus.ecommerce.domain.product.Product;
+import hhplus.ecommerce.domain.product.ProductStock;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import static org.assertj.core.api.Assertions.*;
@@ -29,18 +29,17 @@ public class ProductServiceIntegrationTest {
     ProductService productService;
 
     @Autowired
-    IProductRepository iProductRepository;
+    ProductRepository productRepository;
 
     @Autowired
     EntityManager entityManager;
     @Autowired
-    IProductStockRepository iStockRepository;
-    @Autowired
-    IOrderProductRepository iOrderProductRepository;
+    OrderRepository orderRepository;
+
     @BeforeEach
     public void setUp() {
-        iProductRepository.deleteAll();
-        iStockRepository.deleteAll();
+        productRepository.deleteAll();
+        orderRepository.deleteAll();
     }
     @Test
     public void 상품이름_필터조건_조회성공() {
@@ -60,7 +59,7 @@ public class ProductServiceIntegrationTest {
         Long filterMaxPrice = null;
         Pageable pageable = PageRequest.of(0, 10);
 
-        List<Product> savedProducts = iProductRepository.saveAll(products);
+        List<Product> savedProducts = productRepository.saveAll(products);
 
         //when
         Page<GetProductsByFilterInfo> result = productService.getProductsByFilter(new GetProductsByFilterCommand(filterName,filterMinPrice,filterMaxPrice), pageable);
@@ -90,7 +89,7 @@ public class ProductServiceIntegrationTest {
         Long filterMaxPrice = 200000L;
 
         Pageable pageable = PageRequest.of(0, 10);
-        List<Product> savedProducts = iProductRepository.saveAll(products);
+        List<Product> savedProducts = productRepository.saveAll(products);
 
         //when
         Page<GetProductsByFilterInfo> result = productService.getProductsByFilter(new GetProductsByFilterCommand(filterName,filterMinPrice,filterMaxPrice), pageable);
@@ -108,13 +107,13 @@ public class ProductServiceIntegrationTest {
         int stock = 20;
 
         // 상품 및 재고 생성
-        Product product1 = iProductRepository.save(getProduct("상품1", 5000, getProductStock(stock)));
-        Product product2 = iProductRepository.save(getProduct("상품2", 10000, getProductStock(stock)));
-        Product product3 = iProductRepository.save(getProduct("상품3", 30000, getProductStock(stock)));
-        Product product4 = iProductRepository.save(getProduct("상품4", 100000, getProductStock(stock)));
+        Product product1 = productRepository.save(getProduct("상품1", 5000, getProductStock(stock)));
+        Product product2 = productRepository.save(getProduct("상품2", 10000, getProductStock(stock)));
+        Product product3 = productRepository.save(getProduct("상품3", 30000, getProductStock(stock)));
+        Product product4 = productRepository.save(getProduct("상품4", 100000, getProductStock(stock)));
 
         // 판매 데이터 생성
-        iOrderProductRepository.saveAll(List.of(
+        orderRepository.saveAllOrderProduct(List.of(
                 new OrderProduct(product1, 10),
                 new OrderProduct(product2, 20),
                 new OrderProduct(product3, 15),

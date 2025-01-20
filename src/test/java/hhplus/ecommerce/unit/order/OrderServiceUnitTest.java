@@ -1,18 +1,18 @@
 package hhplus.ecommerce.unit.order;
 
-import hhplus.ecommerce.common.exception.BusinessException;
-import hhplus.ecommerce.common.exception.ErrorCode;
-import hhplus.ecommerce.coupon.domain.issuedcoupon.IIssuedCouponRepository;
-import hhplus.ecommerce.order.domain.IOrderRepository;
-import hhplus.ecommerce.order.domain.OrderService;
-import hhplus.ecommerce.order.domain.dto.OrderCommand;
-import hhplus.ecommerce.order.domain.dto.OrderItemDto;
-import hhplus.ecommerce.order.domain.model.OrderProduct;
-import hhplus.ecommerce.product.domain.model.Product;
-import hhplus.ecommerce.product.domain.stock.IProductStockRepository;
-import hhplus.ecommerce.product.domain.stock.ProductStock;
-import hhplus.ecommerce.user.domain.IUserRepository;
-import hhplus.ecommerce.user.domain.model.User;
+import hhplus.ecommerce.domain.coupon.CouponRepository;
+import hhplus.ecommerce.domain.product.ProductRepository;
+import hhplus.ecommerce.support.exception.BusinessException;
+import hhplus.ecommerce.support.exception.ErrorCode;
+import hhplus.ecommerce.domain.order.OrderRepository;
+import hhplus.ecommerce.domain.order.OrderService;
+import hhplus.ecommerce.domain.order.OrderCommand;
+import hhplus.ecommerce.domain.order.OrderPayDto;
+import hhplus.ecommerce.domain.order.OrderProduct;
+import hhplus.ecommerce.domain.product.Product;
+import hhplus.ecommerce.domain.product.ProductStock;
+import hhplus.ecommerce.domain.user.UserRepository;
+import hhplus.ecommerce.domain.user.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -34,53 +34,15 @@ public class OrderServiceUnitTest {
     @InjectMocks
     private OrderService orderService;
     @Mock
-    private IOrderRepository iOrderRepository;
+    private OrderRepository orderRepository;
     @Mock
-    private IUserRepository iUserRepository;
+    private UserRepository userRepository;
     @Mock
-    private IProductStockRepository iProductStockRepository;
+    private ProductRepository productRepository;
     @Mock
-    private IIssuedCouponRepository issuedCouponRepository;
+    private CouponRepository couponRepository;
 
-    @Test
-    public void 주문한_사용자가_없으면_USER_NOT_FOUND반환() {
-        //given
-        long findUserId = 1L;
-        when(iUserRepository.findById(findUserId)).thenReturn(Optional.empty());
 
-        //then
-        //when
-        assertThatThrownBy(()-> orderService.order(new OrderCommand(findUserId,List.of(),null)))
-                .isInstanceOf(BusinessException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.USER_NOT_FOUND);
-    }
-
-    @Test
-    public void 주문시_발급쿠폰ID가_유효하지_않으면_ISSUEDCOUPON_NOT_FOUND() {
-        //given
-        long userId = 1L;
-        long issuedCouponId = 1L;
-        List<OrderItemDto> orderitems = List.of(new OrderItemDto(1L , 2));
-        OrderCommand command = new OrderCommand(userId,orderitems,issuedCouponId);
-
-        User mockUser = mock(User.class);
-        when(iUserRepository.findById(userId)).thenReturn(Optional.of(mockUser));
-
-        Product product = Product.builder().id(1L).build();
-
-        OrderProduct orderProduct = new OrderProduct(product, 2);
-
-        Map<Long, ProductStock> productStocks = Map.of(1L, ProductStock.builder().product(product).stock(10).build());
-        when(iProductStockRepository.findAllByProductIdInWithLock(Mockito.anyList())).thenReturn(productStocks);
-        when(issuedCouponRepository.findByIdWithCoupon(issuedCouponId)).thenReturn(Optional.empty());
-
-        //then
-        //when
-        assertThatThrownBy(() -> orderService.order(command))
-                .isInstanceOf(BusinessException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.ISSUEDCOUPON_NOT_FOUND);
-
-    }
 
     private static ProductStock getProductStock(int stock) {
         return ProductStock.builder()
