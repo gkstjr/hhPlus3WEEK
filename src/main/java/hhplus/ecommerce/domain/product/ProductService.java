@@ -34,7 +34,7 @@ public class ProductService {
 
         return new OrderProductsInfo(
                   command.orderItems().stream()
-                          .map(dto -> new OrderProduct(getProducts.get(dto.productId()),dto.quantity()))
+                          .map(dto -> new OrderProduct(getProducts.get(dto.productId()),dto.quantity(),getProducts.get(dto.productId()).getPrice()))
                           .toList()
         );
     }

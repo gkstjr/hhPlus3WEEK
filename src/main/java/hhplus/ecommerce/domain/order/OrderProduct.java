@@ -22,14 +22,15 @@ public class OrderProduct extends BaseEntity {
     @JoinColumn(name = "product_id" , foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Product product;
 
-    private int quantity;
+    private long quantity;
 
-    private int price;
+    private long price;
 
 
-    public OrderProduct(Product product, int quantity) {
+    public OrderProduct(Product product, int quantity, long price) {
         this.product = product;
         this.quantity = quantity;
+        this.price = price;
     }
 
     public void addOrder(Order order) {
@@ -38,8 +39,9 @@ public class OrderProduct extends BaseEntity {
     public long calculateTotalPrice() {
         return (long) quantity * price;
     }
+
     @Builder
-    public OrderProduct(Long id, Order order, Product product, int quantity, int price) {
+    public OrderProduct(Long id, Order order, Product product, int quantity, long price) {
         this.id = id;
         this.order = order;
         this.product = product;

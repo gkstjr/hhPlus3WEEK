@@ -114,10 +114,10 @@ public class ProductServiceIntegrationTest {
 
         // 판매 데이터 생성
         orderRepository.saveAllOrderProduct(List.of(
-                new OrderProduct(product1, 10),
-                new OrderProduct(product2, 20),
-                new OrderProduct(product3, 15),
-                new OrderProduct(product4, 5)
+                new OrderProduct(product1, 10 , product1.getPrice()),
+                new OrderProduct(product2, 20,  product2.getPrice()),
+                new OrderProduct(product3, 15 , product3.getPrice()),
+                new OrderProduct(product4, 5 ,  product4.getPrice())
         ));
 
         // When: 서비스 호출

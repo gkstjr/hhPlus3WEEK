@@ -34,8 +34,8 @@ public class OrderUnitTest {
         ProductStock productStock2 = createProductStock(3 , product1);
 
         List<OrderProduct> orderProducts = List.of(
-                createOrderProduct(product1, 10),
-                createOrderProduct(product2, 3)
+                createOrderProduct(product1, 10 , product1.getPrice()),
+                createOrderProduct(product2, 3 , product2.getPrice())
         );
 
         //when
@@ -46,8 +46,9 @@ public class OrderUnitTest {
         assertThat(order.getTotalAmount()).isEqualTo(65000);
     }
 
-    private static OrderProduct createOrderProduct(Product product1, int quantity) {
+    private static OrderProduct createOrderProduct(Product product1, int quantity , long price) {
         return OrderProduct.builder()
+                .price(price)
                 .product(product1).quantity(quantity).build();
     }
 

@@ -72,6 +72,4 @@ public class Coupon extends BaseEntity {
         coupon.issuedCount = issuedCount;
         return coupon;
     }
-
-
 }

@@ -49,10 +49,9 @@ public class Order extends BaseEntity {
 
         order.totalAmount = orderProducts.stream()
                 .peek(order::addOrderProduct)
-                .peek(dto -> System.out.println(dto.getQuantity()+"/" + dto.getProduct().getPrice()))
                 .mapToLong(OrderProduct::calculateTotalPrice)
                 .sum();
-        System.out.println("totalAmount = " + order.totalAmount);
+
         return order;
     }
 

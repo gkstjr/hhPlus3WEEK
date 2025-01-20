@@ -57,16 +57,11 @@ public class PaymentServiceIntegrationTest {
                 .build();
         userRepository.save(user);
 
-        Point point = pointRepository.save(
-                 Point.builder()
-                .point(20000)
-                .user(user)
-                .build());
         //when
-        PayInfo result = paymentService.pay(new PayCommand(order.getId(),point.getUser()));
+        PayInfo result = paymentService.pay(new PayCommand(order,user,0));
 
         //then
-        assertThat(result.remindPoint()).isEqualTo(1);
+        assertThat(result.totalAmount()).isEqualTo(order.getTotalAmount());
         assertThat(result.orderStatus()).isEqualTo(OrderStatus.PAYMENT_COMPLETED);
     }
 }

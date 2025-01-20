@@ -20,21 +20,18 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @OneToOne(mappedBy = "user" , cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "user" , cascade = CascadeType.PERSIST, orphanRemoval = true)
     private Point point;
 
-    @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "user" , cascade = CascadeType.PERSIST,orphanRemoval = true)
     private List<Order> orders = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "user" , cascade = CascadeType.PERSIST,orphanRemoval = true)
     private List<Payment> payments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user" , cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<IssuedCoupon> issuedCoupons = new ArrayList<>();
 
-    public void addPoint(Point getPoint) {
-        point = getPoint;
-    }
     public void setPoint(Point point) {
         this.point = point;
         point.addUser(this);

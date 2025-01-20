@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CouponService {
     private final CouponRepository couponRepository;
-    private final UserRepository userRepository;
 
     @Transactional
     public IssueCouponInfo issueCoupon(IssueCouponCommand issueCouponCommand) {
