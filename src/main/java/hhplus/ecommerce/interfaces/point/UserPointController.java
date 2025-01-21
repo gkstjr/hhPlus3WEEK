@@ -3,6 +3,7 @@ package hhplus.ecommerce.interfaces.point;
 import hhplus.ecommerce.domain.point.PointService;
 import hhplus.ecommerce.domain.point.ChargePointCommand;
 import hhplus.ecommerce.domain.user.User;
+import hhplus.ecommerce.support.auth.CurrentUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -22,13 +23,13 @@ public class UserPointController {
      * */
     @Operation(summary = "잔액 조회", description = "사용자의 잔액을 조회합니다.")
     @GetMapping("/points")
-    public ResponseEntity<UserPointResp> getBalance(User user) {
+    public ResponseEntity<UserPointResp> getBalance(@CurrentUser User user) {
         return ResponseEntity.ok(UserPointResp.from(pointService.getUserPoint(user.getId())));
     }
 
     @Operation(summary = "잔액 충전", description = "사용자의 잔액을 충전합니다.")
     @PostMapping("/points")
-    public ResponseEntity<UserPointResp> rechargeBalance(User user, @RequestBody long chargePoint) {
+    public ResponseEntity<UserPointResp> rechargeBalance(@CurrentUser User user, @RequestBody long chargePoint) {
         return ResponseEntity.ok(UserPointResp.from(pointService.chargePoint(new ChargePointCommand(user.getId(),chargePoint))));
     }
 

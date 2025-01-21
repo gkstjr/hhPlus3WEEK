@@ -7,6 +7,8 @@ import hhplus.ecommerce.domain.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -38,11 +40,11 @@ public class IssuedCoupon extends BaseEntity {
 
     public long validatedUse() {
         if(status.equals(CouponStatus.USED)) throw new BusinessException(ErrorCode.ALREADY_USE_COUPON);
-        this.coupon.validateDate();
+        if(this.coupon.getValidUntil().isBefore(LocalDate.now())) throw new BusinessException(ErrorCode.COUPON_EXPIRED_ISSUE);
+
         this.status = CouponStatus.USED;
         return this.coupon.getDiscountPrice();
     }
-
 
     public void setId(long id) {
         this.id = id;

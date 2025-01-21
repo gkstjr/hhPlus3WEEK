@@ -1,4 +1,4 @@
-package hhplus.ecommerce;
+package hhplus.ecommerce.integration.user;
 
 import hhplus.ecommerce.domain.point.PointService;
 import hhplus.ecommerce.domain.point.UserPointInfo;
@@ -25,35 +25,30 @@ public class UserFilterInterceptorTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private PointService pointService;
-    @Autowired
     private UserRepository userRepository;
 
     @Test
     public void users로시작하는_URL요청시_User정보조회() throws Exception {
         // Given: 테스트 데이터 준비
-        User user = User.builder().name("사용자1").build();
-        userRepository.save(user);
+        User user = userRepository.save(User.builder().name("사용자1").build());
 
         // When,then
         mockMvc.perform(get("/users/test")
-                        .header("userId", user.getId())
+                        .param("userId", String.valueOf(user.getId()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string(String.valueOf(user.getId())));
     }
 
     @Test
-    public void users로시작하지않는_URL요청시_User정보조회x() throws Exception {
+    public void 없는userId로_URL요청시_User정보조회x() throws Exception {
         // Given: 테스트 데이터 준비
-        User user = User.builder().name("사용자1").build();
-        userRepository.save(user);
 
         // When,then
-        mockMvc.perform(get("/test")
-                        .header("userId", user.getId())
+        mockMvc.perform(get("/users/test")
+                        .param("userId", "1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value(ErrorCode.FILTER_TEST_FAIL.getMessage()));
+                .andExpect(jsonPath("$.message").value(ErrorCode.USER_NOT_FOUND.getMessage()));
     }
 }

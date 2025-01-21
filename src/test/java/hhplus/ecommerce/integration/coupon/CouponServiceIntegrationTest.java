@@ -135,12 +135,12 @@ public class CouponServiceIntegrationTest {
             });
         }
 
-        // then
         latch.await(5, TimeUnit.SECONDS);
         executorService.shutdown();
 
-        assertThat(successCount.get()).isEqualTo(maxIssuedCount);
-        assertThat(failCount.get()).isEqualTo(threadCount - maxIssuedCount);
+        //when, then
+        assertThat(successCount.get()).isEqualTo(3);
+        assertThat(failCount.get()).isEqualTo(2);
 
     }
 }
