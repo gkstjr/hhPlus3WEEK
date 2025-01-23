@@ -5,6 +5,7 @@ import hhplus.ecommerce.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -27,5 +28,10 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public void deleteAll() {
         jpaUserRepository.deleteAll();
+    }
+
+    @Override
+    public List<User> saveAll(List<User> users) {
+        return jpaUserRepository.saveAll(users);
     }
 }

@@ -39,26 +39,13 @@ public class Coupon extends BaseEntity {
 
     }
     public void validateIssueCoupon() {
-        validateCount();
-        validateDate();
-    }
-
-    public void validateDate() {
-        if (validUntil.isBefore(LocalDate.now())) {
-            throw new BusinessException(ErrorCode.COUPON_EXPIRED_ISSUE);
-        }
-    }
-
-    private void validateCount() {
-        if (issuedCount >= maxIssuedCount) {
-            throw new BusinessException(ErrorCode.COUPON_MAX_ISSUE);
-        }
+        if (issuedCount >= maxIssuedCount) throw new BusinessException(ErrorCode.COUPON_MAX_ISSUE);
+        if (validUntil.isBefore(LocalDate.now())) throw new BusinessException(ErrorCode.COUPON_EXPIRED_ISSUE);
     }
 
     public void incrementIssuedCoupons() {
         issuedCount++;
     }
-
 
     // 테스트용 빌더
     @Builder

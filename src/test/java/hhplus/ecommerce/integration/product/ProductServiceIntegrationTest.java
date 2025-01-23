@@ -2,13 +2,7 @@ package hhplus.ecommerce.integration.product;
 
 import hhplus.ecommerce.domain.order.OrderProduct;
 import hhplus.ecommerce.domain.order.OrderRepository;
-import hhplus.ecommerce.domain.product.ProductRepository;
-import hhplus.ecommerce.domain.product.GetProductsByFilterInfo;
-import hhplus.ecommerce.domain.product.PopularProductDto;
-import hhplus.ecommerce.domain.product.ProductService;
-import hhplus.ecommerce.domain.product.GetProductsByFilterCommand;
-import hhplus.ecommerce.domain.product.Product;
-import hhplus.ecommerce.domain.product.ProductStock;
+import hhplus.ecommerce.domain.product.*;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,9 +11,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
@@ -40,6 +36,41 @@ public class ProductServiceIntegrationTest {
     public void setUp() {
         productRepository.deleteAll();
         orderRepository.deleteAll();
+    }
+
+    @Test
+    public void 동시에_동일상품재고차감시_40개재고중_10개씩_4번요청성공_이후2개요청실패() throws InterruptedException {
+        Product product = productRepository.save(getProduct("하헌우코치님의 멋있는 녹색 패딩",300000,getProductStock(40)));
+
+        OrderProduct orderProduct = new OrderProduct(product, 10, product.getPrice());
+
+        int threadCount = 6;
+        ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
+        CountDownLatch latch = new CountDownLatch(threadCount);
+        AtomicInteger successCnt = new AtomicInteger();
+        AtomicInteger failCnt = new AtomicInteger();
+
+        //when
+        for(int i = 0 ; i < threadCount; i++) {
+            executorService.submit(() -> {
+                try{
+                    productService.subtractStock(new SubtractStockCommand(List.of(orderProduct)));
+                    successCnt.incrementAndGet();
+                }catch(Exception e) {
+                    failCnt.incrementAndGet();
+                }finally {
+                    latch.countDown();
+                }
+            });
+        }
+        executorService.shutdown();
+        latch.await();
+
+        Page<GetProductsByFilterInfo> result = productService.getProductsByFilter(new GetProductsByFilterCommand(product.getName(),null,null),PageRequest.of(0,10));
+        //then
+        assertThat(successCnt.get()).isEqualTo(4);
+        assertThat(failCnt.get()).isEqualTo(2);
+        assertThat(result.getContent().get(0).stockQuantity()).isEqualTo(0);
     }
     @Test
     public void 상품이름_필터조건_조회성공() {

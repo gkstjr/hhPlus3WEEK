@@ -21,6 +21,9 @@ public class Point extends BaseEntity {
     private User user;
 
     private long point;
+    @Version
+    private Long version;
+
     private static final long MIN_CHARGE_POINT = 1000;
     private static final long MAX_CHARGE_POINT = 10000000;
     private static final long MAX_POINT = 100000000; //최대 포인트 보유한도 1억

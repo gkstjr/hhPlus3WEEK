@@ -23,14 +23,14 @@ public class PointService {
 
     @Transactional
     public UserPointInfo chargePoint(ChargePointCommand command) {
-        Point point = pointRepository.findByUserId(command.userId())
+        Point point = pointRepository.findByUserIdWithLock(command.userId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.POINT_NOT_FOUND));
 
         point.charge(command.chargePoint());
 
         return UserPointInfo.of(point);
     }
-
+    @Transactional
     public long usePoint(UsePointCommand command) {
         Point getPoint =  pointRepository.findByUserIdWithLock(command.user().getId()).orElseThrow(()-> new BusinessException(ErrorCode.POINT_NOT_FOUND));
 

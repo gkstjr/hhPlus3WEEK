@@ -1,4 +1,4 @@
-package hhplus.ecommerce.integration.facade;
+package hhplus.ecommerce.integration.order;
 
 import hhplus.ecommerce.application.order.OrderPayFacade;
 import hhplus.ecommerce.application.order.OrderPayCriteria;
@@ -17,6 +17,7 @@ import hhplus.ecommerce.domain.point.Point;
 import hhplus.ecommerce.domain.product.ProductRepository;
 import hhplus.ecommerce.domain.product.Product;
 import hhplus.ecommerce.domain.product.ProductStock;
+import hhplus.ecommerce.domain.product.SubtractStockCommand;
 import hhplus.ecommerce.domain.user.UserRepository;
 import hhplus.ecommerce.domain.user.User;
 import jakarta.persistence.EntityManager;
@@ -27,6 +28,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static hhplus.ecommerce.domain.coupon.IssuedCoupon.*;
 import static org.assertj.core.api.Assertions.*;
@@ -63,6 +68,58 @@ public class OrderPaymentFacadeTest {
 //        couponRepository.deleteAll();
         productRepository.deleteAll();
     }
+
+    @Test
+    public void 동시에_동일상품주문시_20개재고중_10개씩_2번요청성공_이후1개요청실패() throws InterruptedException {
+        // Given: 테스트 데이터 준비
+        List<User> users = userRepository.saveAll(List.of(
+                User.builder().name("기만석").build(),
+                User.builder().name("기만석2").build(),
+                User.builder().name("기만석3").build(),
+                User.builder().name("기만석4").build()
+        ));
+        List<Point> points = pointRepository.saveAll(users.stream()
+                .map(user -> Point.builder().point(100000).user(user).build())
+                .toList());
+
+        List<Product> products = productRepository.saveAll(List.of(
+                getProduct("하헌우코치님의 녹색 패딩1", 500, getProductStock(20)),
+                getProduct("하헌우코치님의 녹색 패딩2", 1000, getProductStock(20))
+        ));
+        List<OrderPayDto> reqOrderItems = List.of(
+                new OrderPayDto(products.get(0).getId(), 10),
+                new OrderPayDto(products.get(1).getId(), 10)
+        );
+
+        int threadCount = 3;
+        ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
+        CountDownLatch latch = new CountDownLatch(threadCount);
+        AtomicInteger successCnt = new AtomicInteger();
+        AtomicInteger failCnt = new AtomicInteger();
+
+        // When
+        for (int i = 0; i < threadCount; i++) {
+            int index = i; // 사용자 인덱스
+            executorService.submit(() -> {
+                try {
+                    OrderPayResult result = orderPayFacade.orderPay(new OrderPayCriteria(users.get(index), reqOrderItems, null));
+                    successCnt.incrementAndGet();
+                } catch (Exception e) {
+                    failCnt.incrementAndGet();
+                } finally {
+                    latch.countDown();
+                }
+            });
+        }
+
+        executorService.shutdown();
+        latch.await();
+
+        //then
+        assertThat(successCnt.get()).isEqualTo(2);
+        assertThat(failCnt.get()).isEqualTo(1);
+    }
+
     @Test
     public void 주문_결제_성공통합테스트() {
         // Given: 테스트 데이터 준비
