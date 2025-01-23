@@ -1,4 +1,4 @@
-package hhplus.ecommerce.integration.facade;
+package hhplus.ecommerce.integration.order;
 
 import hhplus.ecommerce.application.order.OrderPayFacade;
 import hhplus.ecommerce.application.order.OrderPayCriteria;
