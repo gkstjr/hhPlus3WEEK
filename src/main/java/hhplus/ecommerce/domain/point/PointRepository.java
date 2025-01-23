@@ -1,5 +1,6 @@
 package hhplus.ecommerce.domain.point;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface PointRepository {
@@ -12,4 +13,6 @@ public interface PointRepository {
     Optional<Point> findById(Long id);
 
     void deleteAll();
+
+    List<Point> saveAll(List<Point> points);
 }

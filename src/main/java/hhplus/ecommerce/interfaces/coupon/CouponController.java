@@ -23,7 +23,7 @@ public class CouponController {
     @PostMapping("/coupons/{couponId}")
     public ResponseEntity<IssueCouponResp> issueCoupon(@CurrentUser User user , @PathVariable long couponId) {
 
-        return ResponseEntity.ok(IssueCouponResp.from(couponService.issueCoupon(new IssueCouponCommand(user ,couponId))));
+        return ResponseEntity.ok(IssueCouponResp.from(couponService.issueCoupon(couponId,new IssueCouponCommand(user ,couponId))));
     }
 
     @Operation(summary = "보유 쿠폰 조회", description = "사용자가 보유한 쿠폰 목록을 조회합니다.")

@@ -1,6 +1,5 @@
 package hhplus.ecommerce.domain.product;
 
-import hhplus.ecommerce.domain.order.OrderDetailDto;
 import hhplus.ecommerce.domain.order.OrderPayDto;
 import hhplus.ecommerce.domain.order.OrderProduct;
 import hhplus.ecommerce.domain.order.OrderRepository;
@@ -34,9 +33,9 @@ public class ProductService {
         Map<Long, Product> getProducts = productRepository.findAllByProductIdIn(productIds);
 
         return new OrderProductsInfo(
-                  command.orderItems().stream()
-                          .map(dto -> new OrderProduct(getProducts.get(dto.productId()),dto.quantity(),getProducts.get(dto.productId()).getPrice()))
-                          .toList()
+                command.orderItems().stream()
+                        .map(dto -> new OrderProduct(getProducts.get(dto.productId()),dto.quantity(),getProducts.get(dto.productId()).getPrice()))
+                        .toList()
         );
     }
     @Transactional
