@@ -69,7 +69,7 @@ public class PointServiceUnitTest {
         long chargePoint2 = 10000001;
         Point point = getPoint(pointId,user,currentPoint);
 
-        Mockito.when(pointRepository.findByUserId(userId)).thenReturn(Optional.of(point));
+        Mockito.when(pointRepository.findByUserIdWithLock(userId)).thenReturn(Optional.of(point));
         //when
         //then
         assertThatThrownBy(()-> pointService.chargePoint(new ChargePointCommand(userId,chargePoint1)))
@@ -93,7 +93,7 @@ public class PointServiceUnitTest {
         long chargePoint = 10000000;
         Point point = getPoint(pointId,user,currentPoint);
 
-        Mockito.when(pointRepository.findByUserId(userId)).thenReturn(Optional.of(point));
+        Mockito.when(pointRepository.findByUserIdWithLock(userId)).thenReturn(Optional.of(point));
         //when
         //then
         assertThatThrownBy(()-> pointService.chargePoint(new ChargePointCommand(userId,chargePoint)))
@@ -113,7 +113,7 @@ public class PointServiceUnitTest {
         long chargePoint = 5000;
         Point point = getPoint(pointId,user,currentPoint);
 
-        Mockito.when(pointRepository.findByUserId(userId)).thenReturn(Optional.of(point));
+        Mockito.when(pointRepository.findByUserIdWithLock(userId)).thenReturn(Optional.of(point));
         //when
         UserPointInfo result = pointService.chargePoint(new ChargePointCommand(userId,chargePoint));
 
