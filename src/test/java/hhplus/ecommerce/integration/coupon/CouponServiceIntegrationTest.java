@@ -22,7 +22,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -71,7 +70,7 @@ public class CouponServiceIntegrationTest {
 
         //when
         //then
-        assertThatThrownBy(() -> couponService.issueCoupon(command))
+        assertThatThrownBy(() -> couponService.issueCoupon(couponId,command))
                 .isInstanceOf(BusinessException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.ALREADY_ISSUE_COUPON);
     }
@@ -91,7 +90,7 @@ public class CouponServiceIntegrationTest {
                                      .name("사용자1").build());
 
         //when
-        IssueCouponInfo result = couponService.issueCoupon(new IssueCouponCommand(user,coupon.getId()));
+        IssueCouponInfo result = couponService.issueCoupon(coupon.getId(),new IssueCouponCommand(user,coupon.getId()));
 
         //then
         assertThat(result.issuedCount()).isEqualTo(currentIssued + 1);
@@ -99,7 +98,7 @@ public class CouponServiceIntegrationTest {
 
 
     @Test
-    public void 동시_쿠폰발급시_발급수량을_초과하면_COUPON_MAX_ISSUE_예외가_발생한다() throws InterruptedException {
+    public void 동시_수량이3개인쿠폰발급시_5개요청시_3개성공_2개실패() throws InterruptedException {
         // given
         int threadCount = 5;
         int maxIssuedCount = 3;
@@ -125,10 +124,10 @@ public class CouponServiceIntegrationTest {
             User user = User.builder().id(userId).build();
             executorService.submit(() -> {
                 try {
-                    couponService.issueCoupon(new IssueCouponCommand(user, coupon.getId()));
+                    couponService.issueCoupon(coupon.getId(),new IssueCouponCommand(user, coupon.getId()));
                     successCount.incrementAndGet();
                 } catch (Exception e) {
-                        failCount.incrementAndGet();
+                    failCount.incrementAndGet();
                 } finally {
                     latch.countDown();
                 }
@@ -137,10 +136,11 @@ public class CouponServiceIntegrationTest {
 
         latch.await(5, TimeUnit.SECONDS);
         executorService.shutdown();
+        Coupon result = couponRepository.findById(coupon.getId()).get();
 
         //when, then
+        assertThat(result.getIssuedCount()).isEqualTo(3);
         assertThat(successCount.get()).isEqualTo(3);
         assertThat(failCount.get()).isEqualTo(2);
-
     }
 }
