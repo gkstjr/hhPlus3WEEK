@@ -25,7 +25,11 @@ public class Product extends BaseEntity {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL , orphanRemoval = true)
     private List<OrderProduct> orderProductList = new ArrayList<>();
-
+    public Product(long id , String name , long price) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+    }
     public void setProductStock(ProductStock productStock) {
         this.productStock = productStock;
         productStock.addProduct(this);

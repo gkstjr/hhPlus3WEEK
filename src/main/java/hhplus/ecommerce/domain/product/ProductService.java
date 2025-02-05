@@ -1,6 +1,5 @@
 package hhplus.ecommerce.domain.product;
 
-import hhplus.ecommerce.domain.order.OrderDetailDto;
 import hhplus.ecommerce.domain.order.OrderPayDto;
 import hhplus.ecommerce.domain.order.OrderProduct;
 import hhplus.ecommerce.domain.order.OrderRepository;
@@ -9,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,12 +33,12 @@ public class ProductService {
         Map<Long, Product> getProducts = productRepository.findAllByProductIdIn(productIds);
 
         return new OrderProductsInfo(
-                  command.orderItems().stream()
-                          .map(dto -> new OrderProduct(getProducts.get(dto.productId()),dto.quantity(),getProducts.get(dto.productId()).getPrice()))
-                          .toList()
+                command.orderItems().stream()
+                        .map(dto -> new OrderProduct(getProducts.get(dto.productId()),dto.quantity(),getProducts.get(dto.productId()).getPrice()))
+                        .toList()
         );
     }
-
+    @Transactional
     public void subtractStock(SubtractStockCommand command) {
         List<Long> productIds = command.orderProducts().stream().map(dto -> dto.getProduct().getId()).toList();
 

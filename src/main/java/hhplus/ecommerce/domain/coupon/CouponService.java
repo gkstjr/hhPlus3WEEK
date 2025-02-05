@@ -2,8 +2,7 @@ package hhplus.ecommerce.domain.coupon;
 
 import hhplus.ecommerce.support.exception.BusinessException;
 import hhplus.ecommerce.support.exception.ErrorCode;
-import hhplus.ecommerce.domain.user.UserRepository;
-import hhplus.ecommerce.domain.user.User;
+import hhplus.ecommerce.support.lock.DistributedLock;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -19,8 +18,9 @@ import java.util.stream.Collectors;
 public class CouponService {
     private final CouponRepository couponRepository;
 
+    @DistributedLock(key = "#lockName")
     @Transactional
-    public IssueCouponInfo issueCoupon(IssueCouponCommand issueCouponCommand) {
+    public IssueCouponInfo issueCoupon(Long lockName,IssueCouponCommand issueCouponCommand) {
         Coupon getCoupon = couponRepository.findByIdWithLock(issueCouponCommand.couponId()).orElseThrow(() -> new BusinessException(ErrorCode.COUPON_NOT_FOUND));
 
         IssuedCoupon issuedCoupon = getCoupon.issue(issueCouponCommand.user());

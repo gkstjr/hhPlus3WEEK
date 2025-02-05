@@ -5,6 +5,7 @@ import hhplus.ecommerce.domain.point.Point;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 @Repository
 @RequiredArgsConstructor
@@ -34,5 +35,10 @@ public class PointRepositoryImpl implements PointRepository {
     @Override
     public void deleteAll() {
         jpaPointRepository.deleteAll();
+    }
+
+    @Override
+    public List<Point> saveAll(List<Point> points) {
+        return jpaPointRepository.saveAll(points);
     }
 }

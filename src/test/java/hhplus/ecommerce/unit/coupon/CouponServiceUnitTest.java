@@ -49,7 +49,7 @@ public class CouponServiceUnitTest {
 
         //then
         //when
-        assertThatThrownBy(() -> couponService.issueCoupon(new IssueCouponCommand(user,couponId)))
+        assertThatThrownBy(() -> couponService.issueCoupon(couponId,new IssueCouponCommand(user,couponId)))
                 .isInstanceOf(BusinessException.class)
                 .hasFieldOrPropertyWithValue("errorCode",ErrorCode.COUPON_NOT_FOUND);
     }
@@ -77,7 +77,7 @@ public class CouponServiceUnitTest {
                 });
 
         // when
-        IssueCouponInfo result = couponService.issueCoupon(new IssueCouponCommand(user, coupon.getId()));
+        IssueCouponInfo result = couponService.issueCoupon(coupon.getId(),new IssueCouponCommand(user, coupon.getId()));
 
         // then
         assertThat(result.issuedCount()).isEqualTo(currentIssueCnt + 1);
