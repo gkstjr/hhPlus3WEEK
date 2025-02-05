@@ -19,6 +19,7 @@ public class CouponService {
     private final CouponRepository couponRepository;
 
     @DistributedLock(key = "#lockName")
+    @Transactional
     public IssueCouponInfo issueCoupon(Long lockName,IssueCouponCommand issueCouponCommand) {
         Coupon getCoupon = couponRepository.findByIdWithLock(issueCouponCommand.couponId()).orElseThrow(() -> new BusinessException(ErrorCode.COUPON_NOT_FOUND));
 
