@@ -7,12 +7,11 @@ import hhplus.ecommerce.domain.user.User;
 import java.util.List;
 
 public record OrderPayReq(
-        User user,
         List<OrderPayDto> orderItems,
         long issuedCouponId
 ) {
 
-    public OrderPayCriteria toCriteria() {
-        return new OrderPayCriteria(user, orderItems, issuedCouponId);
+    public OrderPayCriteria toCriteria(User user) {
+        return new OrderPayCriteria(user,orderItems, issuedCouponId);
     }
 }
