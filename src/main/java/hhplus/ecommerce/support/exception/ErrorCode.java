@@ -28,7 +28,7 @@ public enum ErrorCode {
     ALREADY_ISSUE_COUPON(HttpStatus.BAD_REQUEST,"이미 발급받은 쿠폰입니다."),
     ISSUEDCOUPON_NOT_FOUND(HttpStatus.BAD_REQUEST,"발급받은 쿠폰이 없습니다."),
     ALREADY_USE_COUPON(HttpStatus.BAD_REQUEST,"이미 사용한 쿠폰입니다." ),
-
+    IMPOSSIBLE_ISSUE_COUPON(HttpStatus.BAD_REQUEST,"쿠폰 발급 요청에 실패했습니다."),
     //주문&결제
     ORDER_NOT_FOUND(HttpStatus.BAD_REQUEST, "결제에 필요한 주문이 존재하지 않습니다." );
 

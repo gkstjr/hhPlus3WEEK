@@ -59,4 +59,8 @@ public class Coupon extends BaseEntity {
         coupon.issuedCount = issuedCount;
         return coupon;
     }
+
+    public Long calculateIssuableCount() {
+        return (long) (maxIssuedCount - issuedCount);
+    }
 }

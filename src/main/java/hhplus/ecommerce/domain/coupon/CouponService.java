@@ -10,13 +10,25 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class CouponService {
     private final CouponRepository couponRepository;
+    //발급요청 저장
+    public void storeIssuedCouponRequest(IssueCouponCommand command) {
+        Long issuableCount = couponRepository.findIssuableCountByCouponId(command.couponId());
+
+        if(issuableCount == null) {
+            Coupon coupon = couponRepository.findById(command.couponId()).orElseThrow(() -> new BusinessException(ErrorCode.COUPON_NOT_FOUND));
+            issuableCount = coupon.calculateIssuableCount();
+            couponRepository.saveIssuableCount(command.couponId() , issuableCount);
+        }
+        if(issuableCount <= 0) throw new BusinessException(ErrorCode.COUPON_MAX_ISSUE);
+
+        couponRepository.saveCouponRequest(command.couponId(),command.user().getId());
+    }
 
     @DistributedLock(key = "#lockName")
     @Transactional
