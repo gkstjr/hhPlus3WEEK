@@ -48,9 +48,9 @@ dependencies {
 	testImplementation("org.testcontainers:mysql")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-	//Redisson
+	//Rediss
 	implementation("org.redisson:redisson-spring-boot-starter:3.20.1")
-
+	implementation("org.springframework.boot:spring-boot-starter-data-redis")
 	// swagger
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")
 
