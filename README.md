@@ -1,3 +1,7 @@
+### 캐시(전략) 학습 정리
+https://hsdevstudy.tistory.com/43
+
+---
 ### 동시성 제어
 
 <details>
