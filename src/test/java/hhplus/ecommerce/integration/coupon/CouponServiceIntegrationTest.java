@@ -1,17 +1,12 @@
 package hhplus.ecommerce.integration.coupon;
 
+import hhplus.ecommerce.domain.coupon.*;
 import hhplus.ecommerce.domain.order.OrderCommand;
 import hhplus.ecommerce.domain.order.OrderInfo;
 import hhplus.ecommerce.domain.order.OrderPayDto;
 import hhplus.ecommerce.domain.product.Product;
 import hhplus.ecommerce.support.exception.BusinessException;
 import hhplus.ecommerce.support.exception.ErrorCode;
-import hhplus.ecommerce.domain.coupon.CouponService;
-import hhplus.ecommerce.domain.coupon.CouponRepository;
-import hhplus.ecommerce.domain.coupon.IssueCouponCommand;
-import hhplus.ecommerce.domain.coupon.IssueCouponInfo;
-import hhplus.ecommerce.domain.coupon.IssuedCoupon;
-import hhplus.ecommerce.domain.coupon.Coupon;
 import hhplus.ecommerce.domain.user.UserRepository;
 import hhplus.ecommerce.domain.user.User;
 import jakarta.persistence.EntityManager;
@@ -19,9 +14,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -41,11 +39,77 @@ public class CouponServiceIntegrationTest {
     private UserRepository userRepository;
     @Autowired
     private EntityManager entityManager;
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
+    @Autowired
+    private CouponRequestProcessor couponRequestProcessor;
+    private static final String couponRequestKeyName = "issueCoupon:";
+
     @BeforeEach
     public void before() {
         couponRepository.deleteAllIssuedCoupon();
         couponRepository.deleteAll();
         userRepository.deleteAll();
+        redisTemplate.getConnectionFactory().getConnection().flushAll();
+    }
+    @Test
+    public void 선착순_쿠폰_발급요청_레디스_저장() throws InterruptedException {
+        //given
+        Coupon coupon = couponRepository.save(
+                Coupon.builder()
+                        .issuedCount(5)
+                        .validUntil(LocalDate.now().plusDays(1))
+                        .maxIssuedCount(20).build());
+        List<User> users = List.of(
+                userRepository.save(User.builder().name("기만석1").build()),
+                userRepository.save(User.builder().name("기만석2").build()),
+                userRepository.save(User.builder().name("기만석3").build())
+        );
+        //when
+        for (User user : users) {
+            couponService.storeIssuedCouponRequest(new IssueCouponCommand(user, coupon.getId()));
+        }
+
+
+        //then
+        String key = couponRequestKeyName + coupon.getId();
+        Set<String> sortedUserIds = redisTemplate.opsForZSet().range(key, 0, -1);
+
+        assertThat(sortedUserIds)
+                .containsExactly(
+                        users.get(0).getId().toString(),
+                        users.get(1).getId().toString(),
+                        users.get(2).getId().toString()
+                );
+    }
+    @Test
+    public void 선착순_쿠폰발급_레디스() {
+        //given
+        Coupon coupon = couponRepository.save(
+                Coupon.builder()
+                        .issuedCount(5)
+                        .validUntil(LocalDate.now().plusDays(1))
+                        .maxIssuedCount(20).build());
+        List<User> users = List.of(
+                userRepository.save(User.builder().name("기만석1").build()),
+                userRepository.save(User.builder().name("기만석2").build()),
+                userRepository.save(User.builder().name("기만석3").build())
+        );
+        //when
+        //레디스의 발급요청부터 저장
+        for (User user : users) {
+            couponService.storeIssuedCouponRequest(new IssueCouponCommand(user, coupon.getId()));
+        }
+        //발급요청 스케쥴러 서비스호출
+        couponRequestProcessor.issueCouponRequest();
+
+        //then
+        String key = couponRequestKeyName + coupon.getId();
+        Set<String> sortedUserIds = redisTemplate.opsForZSet().range(key, 0, -1);
+        Coupon resultCoupon = couponRepository.findById(coupon.getId()).get();
+
+        assertThat(sortedUserIds.size()).isEqualTo(0);
+        assertThat(resultCoupon.getIssuedCount()).isEqualTo(coupon.getIssuedCount() + users.size());
     }
     @Test
     public void 쿠폰발급시_동일사용자가_동일한쿠폰발급하면_ALREADY_ISSUE_COUPON() {

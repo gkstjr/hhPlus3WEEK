@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CouponService {
     private final CouponRepository couponRepository;
-    //발급요청 저장
+    @Transactional
     public void storeIssuedCouponRequest(IssueCouponCommand command) {
         Long issuableCount = couponRepository.findIssuableCountByCouponId(command.couponId());
 
