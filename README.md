@@ -1,5 +1,6 @@
-### 캐시(전략) 학습 정리
-https://hsdevstudy.tistory.com/43
+### Redis 글 정리
+캐시(전략) 학습 글 정리 - https://hsdevstudy.tistory.com/43 <br>
+E-Commerce에서 Redis사용 보고서 - https://hsdevstudy.tistory.com/44
 
 ---
 ### 동시성 제어
