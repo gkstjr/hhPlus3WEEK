@@ -1,10 +1,7 @@
 package hhplus.ecommerce.interfaces.product;
 
-import hhplus.ecommerce.domain.product.ProductService;
 import hhplus.ecommerce.domain.product.PopularProductDto;
-import hhplus.ecommerce.domain.user.User;
-import hhplus.ecommerce.support.exception.BusinessException;
-import hhplus.ecommerce.support.exception.ErrorCode;
+import hhplus.ecommerce.domain.product.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
