@@ -4,6 +4,7 @@ import hhplus.ecommerce.domain.order.OrderPayDto;
 import hhplus.ecommerce.domain.order.OrderProduct;
 import hhplus.ecommerce.domain.order.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -46,7 +47,7 @@ public class ProductService {
 
         command.orderProducts().forEach(orderProduct -> getProductStocks.get(orderProduct.getProduct().getId()).decreaseStock(orderProduct.getQuantity()));
     }
-
+    @Cacheable(value = "popular_products", key = "'last_3_days'", cacheManager = "redisCacheManager")
     public List<PopularProductDto> getPopularProduct3Days() {
         LocalDateTime endDate = LocalDateTime.now();
         LocalDateTime startDate = endDate.minusDays(3);
