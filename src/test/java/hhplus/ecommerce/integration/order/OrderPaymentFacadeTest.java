@@ -11,20 +11,24 @@ import hhplus.ecommerce.domain.order.Order;
 import hhplus.ecommerce.domain.order.OrderService;
 import hhplus.ecommerce.domain.order.OrderPayDto;
 import hhplus.ecommerce.domain.order.OrderProduct;
+import hhplus.ecommerce.domain.order.event.OrderCreatedEvent;
+import hhplus.ecommerce.domain.payment.PayCommand;
 import hhplus.ecommerce.domain.payment.PaymentService;
 import hhplus.ecommerce.domain.point.PointRepository;
 import hhplus.ecommerce.domain.point.Point;
 import hhplus.ecommerce.domain.product.ProductRepository;
 import hhplus.ecommerce.domain.product.Product;
 import hhplus.ecommerce.domain.product.ProductStock;
-import hhplus.ecommerce.domain.product.SubtractStockCommand;
 import hhplus.ecommerce.domain.user.UserRepository;
 import hhplus.ecommerce.domain.user.User;
+import hhplus.ecommerce.support.exception.BusinessException;
+import hhplus.ecommerce.support.exception.ErrorCode;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -35,6 +39,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static hhplus.ecommerce.domain.coupon.IssuedCoupon.*;
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 public class OrderPaymentFacadeTest {
@@ -48,7 +54,7 @@ public class OrderPaymentFacadeTest {
     @Autowired
     private PaymentService paymentService;
 
-    @Autowired
+    @MockitoSpyBean
     private DataPlatform dataPlatform;
     @Autowired
     private UserRepository userRepository;
@@ -121,8 +127,7 @@ public class OrderPaymentFacadeTest {
     }
 
     @Test
-    public void 주문_결제_성공통합테스트() {
-        // Given: 테스트 데이터 준비
+    public void 주문결제및_데이터플랫폼전송_성공통합테스트_() {
         //given
         User user = userRepository.save(
                 User.builder()
@@ -162,11 +167,55 @@ public class OrderPaymentFacadeTest {
         OrderPayResult result = orderPayFacade.orderPay(new OrderPayCriteria(user,reqOrderItems, issuedCoupon.getId()));
         //then
         assertThat(result.discountAmount()).isEqualTo(5000);
-//        assertThat(result.totalAmount()).isEqualTo(95000);
+        verify(dataPlatform, times(1)).sendOrderData(any(OrderCreatedEvent.class));
         assertThat(result.remindPoint()).isEqualTo(5000);
         assertThat(result.orderStatus()).isEqualTo(Order.OrderStatus.PAYMENT_COMPLETED);
     }
 
+    @Test
+    public void 주문결제실패시_데이터플랫폼전송_실행되지않는다() {
+        // given
+        User user = userRepository.save(
+                User.builder()
+                        .name("기만석")
+                        .build()
+        );
+        Point point = pointRepository.save(
+                Point.builder()
+                        .point(1000) //포인트 부족으로 실패
+                        .user(user)
+                        .build());
+        List<Product> products = productRepository.saveAll(List.of(
+                getProduct("상품1", 5000, getProductStock(10)),
+                getProduct("상품2", 10000, getProductStock(5))
+        ));
+
+        List<OrderPayDto> reqOrderItems = List.of(
+                new OrderPayDto(products.get(0).getId(), 10),
+                new OrderPayDto(products.get(1).getId(), 5)
+        );
+        Coupon coupon = Coupon.builder()
+                .name("5000원 할인쿠폰")
+                .discountPrice(5000)
+                .issuedCount(10)
+                .maxIssuedCount(20)
+                .validUntil(LocalDate.now().plusDays(1))
+                .build();
+        couponRepository.save(coupon);
+
+        IssuedCoupon issuedCoupon = couponRepository.saveIssuedCoupon(
+                IssuedCoupon.builder()
+                        .user(user)
+                        .status(CouponStatus.UNUSED)
+                        .coupon(coupon)
+                        .build());
+
+        // when , then
+        assertThatThrownBy(() -> orderPayFacade.orderPay(new OrderPayCriteria(user,reqOrderItems, issuedCoupon.getId())))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining(ErrorCode.OUT_OF_POINT.getMessage());
+        verify(dataPlatform, never()).sendOrderData(any(OrderCreatedEvent.class));
+    }
 
     private static OrderProduct createOrderProduct(Product product1, int quantity) {
         return OrderProduct.builder()
