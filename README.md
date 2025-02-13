@@ -1,6 +1,10 @@
-### Redis 글 정리
-캐시(전략) 학습 글 정리 - https://hsdevstudy.tistory.com/43 <br>
-E-Commerce에서 Redis사용 보고서 - https://hsdevstudy.tistory.com/44
+
+### 학습 기록
+- 캐시(전략) 개념 정리 : https://hsdevstudy.tistory.com/43 <br>
+- E-Commerce Redis사용 보고서 : https://hsdevstudy.tistory.com/44
+- 인덱스 개념 정리 : https://hsdevstudy.tistory.com/45
+- 인덱스 적용 후 테스트 성능 보고서 : https://hsdevstudy.tistory.com/46
+- MSA 환경에서 트랜잭션 처리 문서: https://hsdevstudy.tistory.com/47
 
 ---
 ### 동시성 제어
