@@ -45,7 +45,7 @@ public class CouponService {
 
         return IssueCouponInfo.from(issuedCoupon);
     }
-
+    @Transactional(readOnly = true)
     public List<IssueCouponInfo> getIssueCoupon(long userId) {
         List<IssuedCoupon> issuedCoupon = couponRepository.findAllIssuedCouponByUserId(userId);
 
@@ -55,7 +55,7 @@ public class CouponService {
 
         return result;
     }
-
+    @Transactional
     public long useCoupon(UseCouponCommand command) {
         if(Objects.isNull(command.issuedCouponId())) return 0;
         IssuedCoupon issuedCoupon = couponRepository.findByIssuedCouponIdWithCoupon(command.issuedCouponId(), command.user().getId()).orElseThrow(() -> new BusinessException(ErrorCode.ISSUEDCOUPON_NOT_FOUND));

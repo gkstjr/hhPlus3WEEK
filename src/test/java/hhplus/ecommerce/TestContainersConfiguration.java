@@ -13,8 +13,8 @@ public class TestContainersConfiguration {
     static {
         MYSQL_CONTAINER = new MySQLContainer<>(DockerImageName.parse("mysql:8.0"))
                 .withDatabaseName("hhplus")
-                .withUsername("test")
-                .withPassword("test");
+                .withUsername("root")
+                .withPassword("1234");
         REDIS_CONTAINER = new GenericContainer<>(DockerImageName.parse("redis:6.2"))
                 .withExposedPorts(6379);
 

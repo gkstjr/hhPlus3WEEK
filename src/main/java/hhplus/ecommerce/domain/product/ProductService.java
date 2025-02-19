@@ -22,12 +22,12 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
 
-
+    @Transactional(readOnly = true)
     public Page<GetProductsByFilterInfo> getProductsByFilter(GetProductsByFilterCommand command, Pageable pageable) {
 
         return productRepository.findByProductWithStockByFilter(command.productName(), command.minPrice(), command.maxPrice(), pageable).map(GetProductsByFilterInfo::from);
     }
-
+    @Transactional(readOnly = true)
     public OrderProductsInfo getOrderProducts(OrderProductsCommand command) {
         List<Long> productIds = command.orderItems().stream().map(OrderPayDto::productId).toList();
 
