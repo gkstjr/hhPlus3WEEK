@@ -4,7 +4,7 @@ import hhplus.ecommerce.domain.coupon.CouponService;
 import hhplus.ecommerce.domain.coupon.UseCouponCommand;
 import hhplus.ecommerce.domain.order.Order;
 import hhplus.ecommerce.domain.order.OrderService;
-import hhplus.ecommerce.domain.order.event.OrderCreatedEvent;
+import hhplus.ecommerce.application.order.event.OrderEvent;
 import hhplus.ecommerce.domain.payment.PayCommand;
 import hhplus.ecommerce.domain.payment.PaymentService;
 import hhplus.ecommerce.domain.payment.PayInfo;
@@ -16,8 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Slf4j
 @Component
@@ -39,7 +37,7 @@ public class OrderPayFacade {
         PayInfo payInfo = paymentService.pay(new PayCommand(order,criteria.user(),discountAmount));
         long remindPoint = pointService.usePoint(new UsePointCommand(criteria.user(),payInfo.totalAmount()));
         productService.subtractStock(new SubtractStockCommand(orderProductsInfo.orderProducts()));
-        eventPublisher.publishEvent(new OrderCreatedEvent(order.getId(),criteria.user().getId())); //주문결제 트랜잭션이 Commit 됐을 때만 데이터 플랫폼 전송
+        eventPublisher.publishEvent(new OrderEvent(order.getId(),criteria.user().getId()));
         return OrderPayResult.of(order,payInfo , discountAmount , remindPoint);
     }
 }
