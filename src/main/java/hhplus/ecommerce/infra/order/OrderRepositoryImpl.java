@@ -1,5 +1,6 @@
 package hhplus.ecommerce.infra.order;
 
+import hhplus.ecommerce.application.order.event.OrderOutbox;
 import hhplus.ecommerce.domain.order.OrderProduct;
 import hhplus.ecommerce.domain.order.OrderRepository;
 import hhplus.ecommerce.domain.order.Order;
@@ -18,7 +19,7 @@ public class OrderRepositoryImpl implements OrderRepository {
 
     private final JpaOrderRepository jpaOrderRepository;
     private final JpaOrderProductRepo jpaOrderProductRepo;
-
+    private final JpaOrderOuxBoxRepo jpaOrderOuxBoxRepo;
     @Override
     public Order save(Order order) {
         return jpaOrderRepository.save(order);
@@ -54,5 +55,20 @@ public class OrderRepositoryImpl implements OrderRepository {
     @Override
     public void saveAllOrderProduct(List<OrderProduct> orderProducts) {
         jpaOrderProductRepo.saveAll(orderProducts);
+    }
+
+    @Override
+    public void saveOutbox(OrderOutbox orderOutbox) {
+        jpaOrderOuxBoxRepo.save(orderOutbox);
+    }
+
+    @Override
+    public Optional<OrderOutbox> findByEventId(String eventId) {
+        return jpaOrderOuxBoxRepo.findByEventId(eventId);
+    }
+
+    @Override
+    public List<OrderOutbox> findAllByStatus(OrderOutbox.OrderOutboxStatus orderOutboxStatus) {
+        return jpaOrderOuxBoxRepo.findAllByStatus(orderOutboxStatus);
     }
 }
