@@ -13,8 +13,8 @@ public class TestContainersConfiguration {
     static {
         MYSQL_CONTAINER = new MySQLContainer<>(DockerImageName.parse("mysql:8.0"))
                 .withDatabaseName("hhplus")
-                .withUsername("root")
-                .withPassword("1234");
+                .withUsername("test")
+                .withPassword("test");
         REDIS_CONTAINER = new GenericContainer<>(DockerImageName.parse("redis:6.2"))
                 .withExposedPorts(6379);
 
@@ -27,6 +27,8 @@ public class TestContainersConfiguration {
         //redis 설정
         System.setProperty("spring.redis.host", REDIS_CONTAINER.getHost());
         System.setProperty("spring.redis.port", REDIS_CONTAINER.getMappedPort(6379).toString());
+        //Kafka 환경 변수 설정
+        System.setProperty("spring.kafka.bootstrap-servers", "localhost:9092");
         // JPA 설정 추가
         System.setProperty("spring.jpa.hibernate.ddl-auto", "create");
         System.setProperty("spring.jpa.show-sql", "true");
