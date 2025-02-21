@@ -3,16 +3,13 @@ package hhplus.ecommerce.integration.order;
 import hhplus.ecommerce.application.order.OrderPayFacade;
 import hhplus.ecommerce.application.order.OrderPayCriteria;
 import hhplus.ecommerce.application.order.OrderPayResult;
+import hhplus.ecommerce.application.order.event.OrderOutbox;
 import hhplus.ecommerce.domain.coupon.CouponRepository;
 import hhplus.ecommerce.domain.coupon.IssuedCoupon;
 import hhplus.ecommerce.domain.coupon.Coupon;
 import hhplus.ecommerce.application.order.DataPlatform;
-import hhplus.ecommerce.domain.order.Order;
-import hhplus.ecommerce.domain.order.OrderService;
-import hhplus.ecommerce.domain.order.OrderPayDto;
-import hhplus.ecommerce.domain.order.OrderProduct;
-import hhplus.ecommerce.domain.order.event.OrderCreatedEvent;
-import hhplus.ecommerce.domain.payment.PayCommand;
+import hhplus.ecommerce.domain.order.*;
+import hhplus.ecommerce.application.order.event.OrderEvent;
 import hhplus.ecommerce.domain.payment.PaymentService;
 import hhplus.ecommerce.domain.point.PointRepository;
 import hhplus.ecommerce.domain.point.Point;
@@ -35,10 +32,12 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static hhplus.ecommerce.domain.coupon.IssuedCoupon.*;
 import static org.assertj.core.api.Assertions.*;
+import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -47,13 +46,10 @@ public class OrderPaymentFacadeTest {
 
     @Autowired
     private OrderPayFacade orderPayFacade;
-
     @Autowired
     private OrderService orderService;
-
     @Autowired
     private PaymentService paymentService;
-
     @MockitoSpyBean
     private DataPlatform dataPlatform;
     @Autowired
@@ -66,6 +62,8 @@ public class OrderPaymentFacadeTest {
     private PointRepository pointRepository;
     @Autowired
     private EntityManager entityManager;
+    @Autowired
+    private OrderRepository orderRepository;
 
     @BeforeEach
     public void cleanUp() {
@@ -127,7 +125,7 @@ public class OrderPaymentFacadeTest {
     }
 
     @Test
-    public void 주문결제및_데이터플랫폼전송_성공통합테스트_() {
+    public void 주문결제완료시_이벤트발행Outbox검증_성공통합테스트() throws InterruptedException {
         //given
         User user = userRepository.save(
                 User.builder()
@@ -167,9 +165,14 @@ public class OrderPaymentFacadeTest {
         OrderPayResult result = orderPayFacade.orderPay(new OrderPayCriteria(user,reqOrderItems, issuedCoupon.getId()));
         //then
         assertThat(result.discountAmount()).isEqualTo(5000);
-        verify(dataPlatform, times(1)).sendOrderData(any(OrderCreatedEvent.class));
         assertThat(result.remindPoint()).isEqualTo(5000);
         assertThat(result.orderStatus()).isEqualTo(Order.OrderStatus.PAYMENT_COMPLETED);
+
+        //outbox-pattern 검증
+        await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
+            List<OrderOutbox> publishedOutboxEvents = orderRepository.findAllByStatus(OrderOutbox.OrderOutboxStatus.PUBLISHED);
+            assertThat(publishedOutboxEvents).isNotEmpty();
+        });
     }
 
     @Test
@@ -214,7 +217,7 @@ public class OrderPaymentFacadeTest {
         assertThatThrownBy(() -> orderPayFacade.orderPay(new OrderPayCriteria(user,reqOrderItems, issuedCoupon.getId())))
                 .isInstanceOf(BusinessException.class)
                 .hasMessageContaining(ErrorCode.OUT_OF_POINT.getMessage());
-        verify(dataPlatform, never()).sendOrderData(any(OrderCreatedEvent.class));
+        verify(dataPlatform, never()).sendOrderData(any(OrderEvent.class));
     }
 
     private static OrderProduct createOrderProduct(Product product1, int quantity) {
