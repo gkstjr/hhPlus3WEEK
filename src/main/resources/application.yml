@@ -21,6 +21,9 @@ spring:
       hibernate.timezone.default_storage: NORMALIZE_UTC
       hibernate.jdbc.time_zone: UTC
 
+  kafka:
+    consumer:
+      auto-offset-reset: earliest
 ---
 spring.config.activate.on-profile: local, test
 
