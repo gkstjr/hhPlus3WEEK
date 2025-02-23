@@ -30,7 +30,9 @@ public enum ErrorCode {
     ALREADY_USE_COUPON(HttpStatus.BAD_REQUEST,"이미 사용한 쿠폰입니다." ),
     IMPOSSIBLE_ISSUE_COUPON(HttpStatus.BAD_REQUEST,"쿠폰 발급 요청에 실패했습니다."),
     //주문&결제
-    ORDER_NOT_FOUND(HttpStatus.BAD_REQUEST, "결제에 필요한 주문이 존재하지 않습니다." );
+    ORDER_NOT_FOUND(HttpStatus.BAD_REQUEST, "결제에 필요한 주문이 존재하지 않습니다." ),
+    ORDER_JSON_PARSE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"OrderOutbox JSON 변환 실패" ),
+    Kafka_NETWORT_FAILED(HttpStatus.INTERNAL_SERVER_ERROR,"Kafka 통신에 실패했습니다." );
 
 
     private final HttpStatus httpStatus;
