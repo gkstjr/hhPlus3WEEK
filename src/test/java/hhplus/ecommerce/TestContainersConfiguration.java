@@ -7,40 +7,24 @@ import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.utility.DockerImageName;
 @Configuration
 public class TestContainersConfiguration {
-    public static final MySQLContainer<?> MYSQL_CONTAINER;
-    public static final GenericContainer<?> REDIS_CONTAINER;
+
 
     static {
-        MYSQL_CONTAINER = new MySQLContainer<>(DockerImageName.parse("mysql:8.0"))
-                .withDatabaseName("hhplus")
-                .withUsername("test")
-                .withPassword("test");
-        REDIS_CONTAINER = new GenericContainer<>(DockerImageName.parse("redis:6.2"))
-                .withExposedPorts(6379);
+        // MySQL 설정 (docker-compose의 mysql 컨테이너와 연동)
+        System.setProperty("spring.datasource.url", "jdbc:mysql://localhost:3307/hhplus?characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false");
+        System.setProperty("spring.datasource.username", "test");
+        System.setProperty("spring.datasource.password", "test");
 
-        MYSQL_CONTAINER.start();
-        REDIS_CONTAINER.start();
+        // Redis 설정 (docker-compose의 redis 컨테이너와 연동)
+        System.setProperty("spring.redis.host", "localhost");
+        System.setProperty("spring.redis.port", "6379");
 
-        System.setProperty("spring.datasource.url", MYSQL_CONTAINER.getJdbcUrl() + "?characterEncoding=UTF-8&serverTimezone=UTC");
-        System.setProperty("spring.datasource.username", MYSQL_CONTAINER.getUsername());
-        System.setProperty("spring.datasource.password", MYSQL_CONTAINER.getPassword());
-        //redis 설정
-        System.setProperty("spring.redis.host", REDIS_CONTAINER.getHost());
-        System.setProperty("spring.redis.port", REDIS_CONTAINER.getMappedPort(6379).toString());
-        //Kafka 환경 변수 설정
+        // Kafka 설정 (docker-compose의 kafka 컨테이너와 연동)
         System.setProperty("spring.kafka.bootstrap-servers", "localhost:9092");
-        // JPA 설정 추가
+
+        // JPA 설정
+        System.setProperty("spring.jpa.properties.hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
         System.setProperty("spring.jpa.hibernate.ddl-auto", "create");
         System.setProperty("spring.jpa.show-sql", "true");
-    }
-
-    @PreDestroy
-    public void preDestroy() {
-        if (MYSQL_CONTAINER.isRunning()) {
-            MYSQL_CONTAINER.stop();
-        }
-        if (REDIS_CONTAINER.isRunning()) {
-            REDIS_CONTAINER.stop();
-        }
     }
 }

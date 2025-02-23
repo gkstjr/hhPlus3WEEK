@@ -1,5 +1,23 @@
-version: '3.8'
+version: '3'
 services:
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=test
+      - MYSQL_USER=test
+      - MYSQL_PASSWORD=test
+      - MYSQL_DATABASE=hhplus
+    volumes:
+      - ./data/mysql/:/var/lib/mysql
+
+  redis:
+    image: redis:6.2
+    container_name: redis
+    ports:
+      - "6379:6379"
+
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     container_name: zookeeper
@@ -21,3 +39,7 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"  # ✅ Zookeeper 연결
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+networks:
+  default:
+    driver: bridge
