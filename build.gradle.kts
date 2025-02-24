@@ -39,24 +39,26 @@ dependencies {
 	annotationProcessor("org.projectlombok:lombok")
 
 	// DB
+	testImplementation("org.testcontainers:mysql")
 	runtimeOnly("com.mysql:mysql-connector-j")
 
 	// Test
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.boot:spring-boot-testcontainers")
 	testImplementation("org.testcontainers:junit-jupiter")
-	testImplementation("org.testcontainers:mysql")
-	testImplementation("org.testcontainers:kafka")
-	testImplementation("org.springframework.kafka:spring-kafka-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
 	//Rediss
-	implementation("org.redisson:redisson-spring-boot-starter:3.20.1")
 	implementation("org.springframework.boot:spring-boot-starter-data-redis")
+	implementation("org.redisson:redisson-spring-boot-starter:3.43.0")
+	testImplementation("com.redis.testcontainers:testcontainers-redis:1.6.4")
+
 	// swagger
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")
 	//kafka
 	implementation("org.springframework.kafka:spring-kafka")
+	testImplementation("org.testcontainers:kafka")
+	testImplementation("org.springframework.kafka:spring-kafka-test")
 	// QueryDSL
 	implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
 	annotationProcessor("com.querydsl:querydsl-apt:5.0.0:jakarta")

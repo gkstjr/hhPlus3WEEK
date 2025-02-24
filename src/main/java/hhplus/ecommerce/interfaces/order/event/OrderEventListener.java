@@ -5,6 +5,7 @@ import hhplus.ecommerce.application.order.event.OrderEvent;
 import hhplus.ecommerce.application.order.event.OrderProducer;
 import hhplus.ecommerce.application.order.event.OrderOutboxManager;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
 
@@ -18,7 +19,7 @@ public class OrderEventListener {
     public void saveOutbox(OrderEvent event) {
         orderOutboxManager.saveOutbox(event);
     }
-
+    @Async
     @TransactionalEventListener(phase = AFTER_COMMIT)
     public void sendOrderInfo(OrderEvent event) {
         orderProducer.sendMessage(event);
